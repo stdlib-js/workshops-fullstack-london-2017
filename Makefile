@@ -71,6 +71,16 @@ install: install-node install-bower
 .PHONY: install
 
 
+# Perform clean-up.
+#
+# This target runs the project's cleanup sequence.
+
+clean: clean-node
+	$(QUIET) $(DELETE) $(DELETE_FLAGS) $(BUILD_DIR)
+
+.PHONY: clean
+
+
 # Install node module dependencies.
 #
 # This target installs package dependencies by executing [`npm install`][1]. Packages will be installed in a local `node_modules` directory relative to the project's `package.json` file.
