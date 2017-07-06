@@ -51,6 +51,18 @@ BOWER_COMPONENTS ?= $(ROOT_DIR)/components
 # Define the top-level directory containing node module executables:
 BIN_DIR ?= $(NODE_MODULES)/.bin
 
+# Define keywords identifying annotations:
+KEYWORDS ?= 'TODO|FIXME|WARNING|HACK|NOTE|OPTIMIZE'
+
+# Define the command for finding notes:
+FIND_NOTES ?= grep
+
+# Define the command-line options:
+FIND_NOTES_FLAGS ?= -Ern
+
+# Define the search directory:
+FIND_NOTES_DIR ?= $(ROOT_DIR)
+
 # Define the path to the [`polyserve`][1] executable:
 #
 # [1]: https://github.com/Polymer/polyserve
@@ -80,6 +92,7 @@ help:
 	$(QUIET) echo 'Usage: make <cmd>'
 	$(QUIET) echo ''
 	$(QUIET) echo '  make help                   Print this message.'
+	$(QUIET) echo '  make notes                  Search for code annotations.'
 	$(QUIET) echo '  make install-node           Install node module dependencies.'
 	$(QUIET) echo '  make install-bower          Install bower components.'
 	$(QUIET) echo '  make clean                  Run all cleanup tasks.'
@@ -161,3 +174,20 @@ dev: $(NODE_MODULES)
 	$(QUIET) $(POLYSERVE) $(POLYSERVE_FLAGS)
 
 .PHONY: dev
+
+
+# Enumerate all annotations.
+#
+# This target searches for annotated comments which indicate work that remains to be completed. Annotated comments will be output, along with the filename and line number where they appear.
+
+notes:
+	$(QUIET) $(FIND_NOTES) $(FIND_NOTES_FLAGS) $(KEYWORDS) $(FIND_NOTES_DIR) \
+		--exclude-dir "$(NODE_MODULES)/*" \
+		--exclude-dir "$(BOWER_COMPONENTS)/*" \
+		--exclude-dir "$(BUILD_DIR)/*" \
+		--exclude "$(this_file)" \
+		--exclude "$(ROOT_DIR)/.*" \
+		--exclude "$(ROOT_DIR)/js/*" \
+		--exclude TODO.md
+
+.PHONY: notes
