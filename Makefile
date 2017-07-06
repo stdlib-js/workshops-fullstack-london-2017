@@ -62,6 +62,34 @@ POLYSERVE_FLAGS ?= -o
 
 # TARGETS #
 
+# Default target.
+#
+# This target is the default target.
+
+all: help
+
+.PHONY: all
+
+
+# Print Makefile help.
+#
+# This target prints a help message and lists available targets.
+
+help:
+	$(QUIET) echo ''
+	$(QUIET) echo 'Usage: make <cmd>'
+	$(QUIET) echo ''
+	$(QUIET) echo '  make help                   Print this message.'
+	$(QUIET) echo '  make install-node           Install node module dependencies.'
+	$(QUIET) echo '  make install-bower          Install bower components.'
+	$(QUIET) echo '  make clean                  Run all cleanup tasks.'
+	$(QUIET) echo '  make clean-node             Remove node module dependencies.'
+	$(QUIET) echo '  make dev                    Launch a local development server.'
+	$(QUIET) echo ''
+
+.PHONY: help
+
+
 # Install dependencies.
 #
 # This target installs dependencies.
