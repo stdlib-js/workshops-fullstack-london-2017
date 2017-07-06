@@ -111,6 +111,16 @@ where `upstream` is the remote name and `<branch>` refers to the branch you want
 * This repository uses [EditorConfig][editorconfig] to maintain consistent coding styles between different editors and IDEs, including [browsers][editorconfig-chrome].
 
 
+## License
+
+See [LICENSE][license].
+
+
+## Copyright
+
+Copyright &copy; 2017. The Stdlib [Authors][authors].
+
+
 <!-- Section for all links. Make sure to keep an empty line after the `section` element and another before the `/section` close. -->
 
 <section class="links">
@@ -130,6 +140,9 @@ where `upstream` is the remote name and `<branch>` refers to the branch you want
 
 [editorconfig]: http://editorconfig.org/
 [editorconfig-chrome]: https://chrome.google.com/webstore/detail/github-editorconfig/bppnolhdpdfmmpeefopdbpmabdpoefjh?hl=en-US
+
+[authors]: https://github.com/kgryte/workshops-fullstack-london-2017/graphs/contributors
+[license]: https://raw.githubusercontent.com/kgryte/workshops-fullstack-london-2017/master/LICENSE
 
 </section>
 
