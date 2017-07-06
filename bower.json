@@ -1,8 +1,10 @@
 {
-	"name": "workshop-fullstack-2017",
-	"version": "0.0.0",
-	"private": true,
-	"license": "Apache-2.0",
-	"dependencies": {},
-	"devDependencies": {}
+  "name": "workshop-fullstack-london-2017",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "codelab-components": "git://github.com/googlecodelabs/codelab-components.git#^2.0.2"
+  },
+  "devDependencies": {}
 }
