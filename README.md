@@ -9,7 +9,7 @@ The fields of machine learning and data science can appear intractable and overw
 
 The rise of Node.js and Electron are powering a new era where JavaScript continues to expand beyond the browser and becomes a critical component of server and desktop applications. With JavaScript being everywhere, one of the emerging next frontiers for JavaScript world domination is data science.
 
-In this workshop, you will learn how to utilize the JavaScript open-source library stdlib for various data science tasks. Through a series of brief exercises, attendees will get a hands-on introduction, ranging from analytics to machine learning to exploratory data analysis and visualization. For example, you will investigate the accuracy of the native JavaScript Math functions, build a spam classifier, and generate synthetic texts using Markov chains.
+In this workshop, you will learn how to utilize the JavaScript open-source library [stdlib][stdlib] for various data science tasks. Through a series of brief exercises, attendees will get a hands-on introduction, ranging from analytics to machine learning to exploratory data analysis and visualization. For example, you will investigate the accuracy of the native JavaScript Math functions, build a spam classifier, and generate synthetic texts using Markov chains.
 
 After completing this workshop, you will have a solid understanding of what kind of problems they can approach by which techniques. Furthermore, you will have experience in conducting a full analysis from start to end, i.e., exploring, cleaning, transforming, and analyzing data with state-of-the-art techniques.
 
@@ -124,6 +124,8 @@ Copyright &copy; 2017. The Stdlib [Authors][authors].
 <!-- Section for all links. Make sure to keep an empty line after the `section` element and another before the `/section` close. -->
 
 <section class="links">
+
+[stdlib]: https://github.com/stdlib-js/stdlib
 
 [git]: http://git-scm.com/
 [gnu-make]: https://www.gnu.org/software/make
