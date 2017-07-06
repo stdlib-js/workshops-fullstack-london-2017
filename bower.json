@@ -1,0 +1,8 @@
+{
+	"name": "workshop-fullstack-2017",
+	"version": "0.0.0",
+	"private": true,
+	"license": "Apache-2.0",
+	"dependencies": {},
+	"devDependencies": {}
+}
