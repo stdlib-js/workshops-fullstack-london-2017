@@ -85,7 +85,7 @@ To launch a local development server,
 $ make dev
 ```
 
-which will automatically open the workshop in your default local web browser.
+which will automatically open the workshop in a local web browser.
 
 
 ## Update
