@@ -172,6 +172,73 @@
 					<a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> is a standard library for Node.js and JavaScript, with an emphasis on numeric computing. The library includes an extensive collection of standard library mathematical functions, utilities for manipulating floating-point numbers and transforming data, seedable pseudorandom number generators, BLAS interfaces, sample datasets, plotting, string utilities, and much more. See the <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">repository</a> for more information.
 				</p>
 			</aside>
+
+			<h3>Setup</h3>
+			<p>
+				To access the <a title="REPL" href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a>, open the JavaScript <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> for <strong>this</strong> page.
+			</p>
+			<aside class="special">
+				<p>
+					For example, in Chrome on Mac, press <code>Cmd+Alt+J</code>, and, in Chrome on Windows, press <code>Ctrl+Shift+J</code>.
+				</p>
+			</aside>
+			<p>
+				Once the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> is open, we recommend arranging the windows side-by-side to facilitate moving between this page and the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> as you progress through the various exercises.
+			</p>
+			<img src="img/setup_layout.png">
+
+			<h3>Getting Started</h3>
+			<p>
+				If you are unfamiliar with the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a>, the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> provides an interactive environment for running JavaScript in the browser. Try entering the following in the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> window:
+			</p>
+			<pre><code language="javascript">2 + 2</code></pre>
+			<p>
+				When you press <code>enter</code>, the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> will <strong>read</strong> the input, <strong>evaluate</strong> the input, and <strong>print</strong> the results.
+			</p>
+			<pre><code language="javascript">
+&gt; 2 + 2
+4</code></pre>
+			<aside class="special">
+				<p>
+					Throughout the workshop, we will often include the <code>&gt;</code> symbol for expressions entered in the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a>. Doing so helps distinguish between the expressions which are evaluated and the printed results. When entering expressions, <strong>omit</strong> the leading <code>&gt;</code> symbol.
+				</p>
+			</aside>
+			<p>
+				<a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> augments the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> by exposing all library functionality within the global namespace. For example, to compute the <a title="Error function" href="https://en.wikipedia.org/wiki/Error_function">error function</a> for <code>1.5</code>
+			</p>
+			<pre><code language="javascript">
+> base.erf( 1.5 )
+0.9661051464753108</code></pre>
+			<p>
+				Or to get the current time (in seconds) since the <a title="Unix epoch" href="https://en.wikipedia.org/wiki/Unix_time">Unix epoch</a>
+			</p>
+			<pre><code language="javascript">
+> now()</code></pre>
+			<p>
+				To list library functionality, enter
+			</p>
+			<pre><code language="javascript">
+> TODO</code></pre>
+
+			<h3>Help</h3>
+			<p>
+				One of the key features of <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> is the inclusion of REPL help documentation, which is accessed via the <code>help()</code> command. For example, to access the help documentation for <code>base.erf</code>
+			</p>
+			<pre><code language="javascript">
+> help( base.erf )</code></pre>
+			<p>
+				All REPL help documentation follows the same general structure, providing examples, related functionality, and top-level, parameter, and return value descriptions.
+			</p>
+			<img src="img/repl_help_example.png">
+
+			<h3>Exercises</h3>
+			<ul>
+				<li>Familiarize yourself with REPL functionality by viewing the help documentation for a variety of exposed functions.</li>
+				<li>Based on the example for <code>countBy()</code>, count the number of names in the <code>FEMALE_FIRST_NAMES_EN()</code> dataset which begin with a given letter. The result should be an object with letters as keys (e.g., <code>a</code>, <code>b</code>, <code>c</code>, <code>d</code>, ...) and counts as values.</li>
+				<li>Similar to the previous exercise, use the <code>groupBy()</code> function to group names according to first letter.</li>
+				<li>Similar to the previous exercise, use the <code>tabulateby()</code> function to generate a frequency table of first letter occurrences.</li>
+			</ul>
+
 		</google-codelab-step>
 
 		<!-- -->

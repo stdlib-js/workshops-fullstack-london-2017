@@ -4,10 +4,6 @@
 
 1. Getting to know stdlib
 
-   * REPL
-   * help
-   * docs
-   * what is available
    * plotting
    * generating random numbers
    * plotting distributions
