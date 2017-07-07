@@ -185,7 +185,9 @@
 			<p>
 				Once the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> is open, we recommend arranging the windows side-by-side to facilitate moving between this page and the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> as you progress through the various exercises.
 			</p>
-			<img alt="Side-by-side window layout" src="img/setup_layout.png">
+			<div align="center">
+				<img alt="Side-by-side window layout" src="img/setup_layout.png" style="max-width: 800px;">
+			</div>
 
 			<h3>Getting Started</h3>
 			<p>
@@ -229,7 +231,9 @@
 			<p>
 				All REPL help documentation follows the same general structure, providing examples, related functionality, and top-level, parameter, and return value descriptions.
 			</p>
-			<img alt="REPL help example" src="img/repl_help_example.png">
+			<div align="center">
+				<img alt="REPL help example" src="img/repl_help_example.png" style="max-width: 600px;">
+			</div>
 
 			<h3>Exercises</h3>
 			<ul>
@@ -247,7 +251,9 @@
 			<p>
 				A <a title="Plot" href="https://en.wikipedia.org/wiki/Plot_%28graphics%29">plot</a> is a graphical technique used to represent a data set. The most common representation is a <a title="Graph" href="https://en.wikipedia.org/wiki/Graph_of_a_function">graph</a> showing the relationship between two or more variables.
 			</p>
-			<img alt="Plot example" src="img/plot_example.png">
+			<div align="center">
+				<img alt="Plot example" src="img/plot_example.png" style="max-width: 800px;">
+			</div>
 			<p>
 				Plots are critical for gaining insight into data sets. Plots facilitate testing assumptions, selecting and validating models, identifying relationships, detecting outliers, and communicating results. And importantly, plots as <a title="Statistical graphics" href="https://en.wikipedia.org/wiki/Statistical_graphics">statistical graphics</a> (i.e., graphs which visualize quantitative data) provide insight into the underlying structure of data.
 			</p>
@@ -265,6 +271,54 @@
 			</p>
 
 			<h3>Getting Started</h3>
+			<p>
+				To begin, we need to create some simple data sets (feel free to use your own numeric values).
+			</p>
+			<pre><code language="javascript">
+> var x = [ 1, 2, 3 ];
+> var y = [ 1, 0, 1 ];</code></pre>
+			<p>
+				Now that we have some data, let us plot it! To do so, we must first create a plot instance.
+			</p>
+			<pre><code language="javascript">
+> var plt = plot( [x], [y] )</code></pre>
+			<p>
+				At this point, nothing is rendered. To render the plot,
+			</p>
+			<pre><code language="javascript">
+> var vtree = plt.render()</code></pre>
+			<p>
+				The output of the <code>render()</code> method is <a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a>, which is a declarative way of representing the DOM.
+			</p>
+			<aside class="special">
+				<p>
+					<a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a> is a JavaScript DOM model which supports element creation, diff computation, and patch operations for efficient re-rendering. <a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a> is a convenient abstraction for plotting, as the model enables batched updates, performant rendering, and efficient serialization and provides an intermediate representation suitable for both client-side and server-side plot rendering.
+				</p>
+			</aside>
+			<p>
+				To generate HTML, we need to use <code>vdom2html()</code>, which translates <a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a> to HTML.
+			</p>
+			<pre><code language="javascript">
+> var html = vdom2html( vtree )</code></pre>
+			<p>
+				Now that we have rendered our plot and generated HTML, we need to generate the view (i.e., insert the plot into our page). To do so, we must first select the element into which we want to insert our plot. For convenience, we have already created a placeholder element. To select the element,
+			</p>
+			<pre><code language="javascript">
+> var el = document.querySelector( '#plot-1' )</code></pre>
+			<p>
+				To insert the plot,
+			</p>
+			<pre><code language="javascript">
+> el.innerHTML = html</code></pre>
+			<div id="plot-1" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+			</div>
+			<p>
+				The plot view should look similar to the following (assuming the same data):
+			</p>
+			<div align="center">
+				<img alt="Basic plot" src="img/plot_1.png" style="max-width: 600px;">
+			</div>
 
 		</google-codelab-step>
 
