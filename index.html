@@ -209,25 +209,25 @@
 				<a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> augments the <a title="Accessing the JavaScript console in Chrome" href="https://developer.chrome.com/devtools#access">console</a> by exposing all library functionality within the global namespace. For example, to compute the <a title="Error function" href="https://en.wikipedia.org/wiki/Error_function">error function</a> for <code>1.5</code>
 			</p>
 			<pre><code language="javascript">
-> base.erf( 1.5 )
+&gt; base.erf( 1.5 )
 0.9661051464753108</code></pre>
 			<p>
 				Or to get the current time (in seconds) since the <a title="Unix epoch" href="https://en.wikipedia.org/wiki/Unix_time">Unix epoch</a>
 			</p>
 			<pre><code language="javascript">
-> now()</code></pre>
+&gt; now()</code></pre>
 			<p>
 				To list library functionality, enter
 			</p>
 			<pre><code language="javascript">
-> TODO</code></pre>
+&gt; TODO</code></pre>
 
 			<h3>Help</h3>
 			<p>
 				One of the key features of <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> is the inclusion of REPL help documentation, which is accessed via the <code>help()</code> command. For example, to access the help documentation for <code>base.erf</code>
 			</p>
 			<pre><code language="javascript">
-> help( base.erf )</code></pre>
+&gt; help( base.erf )</code></pre>
 			<p>
 				All REPL help documentation follows the same general structure, providing examples, related functionality, and top-level, parameter, and return value descriptions.
 			</p>
@@ -275,18 +275,18 @@
 				To begin, we need to create some simple data sets (feel free to use your own numeric values).
 			</p>
 			<pre><code language="javascript">
-> var x = [ 1, 2, 3 ];
-> var y = [ 1, 0, 1 ];</code></pre>
+&gt; var x = [ 1, 2, 3 ];
+&gt; var y = [ 1, 0, 1 ];</code></pre>
 			<p>
 				Now that we have some data, let us plot it! To do so, we must first create a plot instance.
 			</p>
 			<pre><code language="javascript">
-> var plt = plot( [x], [y] )</code></pre>
+&gt; var plt = plot( [x], [y] )</code></pre>
 			<p>
 				At this point, nothing is rendered. To render the plot,
 			</p>
 			<pre><code language="javascript">
-> var vtree = plt.render()</code></pre>
+&gt; var vtree = plt.render()</code></pre>
 			<p>
 				The output of the <code>render()</code> method is <a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a>, which is a declarative way of representing the DOM.
 			</p>
@@ -299,17 +299,17 @@
 				To generate HTML, we need to use <code>vdom2html()</code>, which translates <a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a> to HTML.
 			</p>
 			<pre><code language="javascript">
-> var html = vdom2html( vtree )</code></pre>
+&gt; var html = vdom2html( vtree )</code></pre>
 			<p>
 				Now that we have rendered our plot and generated HTML, we need to generate the view (i.e., insert the plot into our page). To do so, we must first select the element into which we want to insert our plot. For convenience, we have already created a placeholder element. To select the element,
 			</p>
 			<pre><code language="javascript">
-> var el = document.querySelector( '#plot-1' )</code></pre>
+&gt; var el = document.querySelector( '#plot-1' )</code></pre>
 			<p>
 				To insert the plot,
 			</p>
 			<pre><code language="javascript">
-> el.innerHTML = html</code></pre>
+&gt; el.innerHTML = html</code></pre>
 			<figure id="plot-1" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #plot-1: A basic plot.</figcaption>
@@ -350,12 +350,12 @@
 			Imagine the following scenario: you have two landing pages for your website and would like to know which one works is more effective in converting visitors. Suppose you have collected the following two data sets, where a <code>1</code> denotes that a visitor signed up and a <code>0</code> denotes that the visitor left the page without taking any action.
 		</p>
 		<pre><code language="javascript">
-> var page1 = [
+&gt; var page1 = [
  	  1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
  	  0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
  	  0, 1, 1, 0, 0, 0, 0, 0, 0, 0
 ];
-> var page2 = [
+&gt; var page2 = [
  	  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
  	  0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
  	  0, 0, 0, 0, 0, 0, 0, 1, 0, 0
@@ -374,7 +374,7 @@
 			<p> We can use <code>ttest2</code> command to test whether the means of two groups are really different.</p>
 
 			<pre><code language="javascript">
-> var out = ttest2( page1, page2 );</code></pre>
+&gt; var out = ttest2( page1, page2 );</code></pre>
 
 			<p>The hard part of conducting a statistical test is usually not the coding or to get the data into the right format, but picking an appropriate test for the given situation and the interpretation of the results. In contast to other statistical libraries, <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> provides extensive information about the results of a test inside the returned object, which ease interpretation and help you to assess the result of the test.</p>
 
@@ -383,7 +383,7 @@
 			<p>You can use the <code>.print()</code> method of the returned object to view a pretty-printed output, which will print the exact definition of the alternative hypothesis for the given test.</p>
 
 			<pre><code language="javascript">
-> out.print()</code></pre>
+&gt; out.print()</code></pre>
 
 			<p>For our given problem, do we conclude that the first page or the second page is more efficient at converting users to your site?</p>
 
