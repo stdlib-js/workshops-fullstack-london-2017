@@ -368,16 +368,17 @@
 					When you have a binary variable made up of zeros and ones, calculating the mean gives you the proportion of observations which are in the <code>1</code> category. This is the <strong>only</string> instance in which calculating a numerical <a href="https://en.wikipedia.org/wiki/Summary_statistics">summary statistic</a> for <a href="https://en.wikipedia.org/wiki/Categorical_variable">categorical data</a> is appropriate.
 				</p>
 			</aside>
-
-			<p>But is it also statistically significant? Let's find out!</p>
-
-			<p> We can use <code>ttest2</code> command to test whether the means of two groups are really different.</p>
-
+			<p>
+				While the the difference in means seems large, is the difference also statistically significant? Let us find out!
+			</p>
+			<p>
+				To test for statistical significance, we can use <code>ttest2()</code> command.
+			</p>
 			<pre><code language="javascript">
 &gt; var out = ttest2( page1, page2 );</code></pre>
-
-			<p>The hard part of conducting a statistical test is usually not the coding or to get the data into the right format, but picking an appropriate test for the given situation and the interpretation of the results. In contrast to other statistical libraries, <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> provides extensive information about the results of a test inside the returned object, which ease interpretation and help you to assess the result of the test.</p>
-
+			<p>
+				The hard part of conducting a statistical test is usually not the coding or to get the data into the right format, but picking an appropriate test for the given situation and the interpretation of the results. In contrast to other statistical libraries, <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> provides extensive information about the results of a test inside the returned object, which ease interpretation and help you to assess the result of the test.
+			</p>
 			<p>The <code>rejected</code> property is a boolean signaling whether the null hypothesis of the test was rejected. The null hypothesis, which is often denoted as H0, denotes the case when there is no difference. The alternative hypothesis, which corresponds to the existence of a difference, is denoted as H1.</p>
 
 			<p>You can use the <code>.print()</code> method of the returned object to view a pretty-printed output, which will print the exact definition of the alternative hypothesis for the given test.</p>
