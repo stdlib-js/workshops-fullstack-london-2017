@@ -379,17 +379,20 @@
 			<p>
 				Often, the most difficult part of conducting statistical tests is knowing what test to use and how to interpret results. Fortunately, <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> provides extensive result summaries, facilitating interpretation and helping you to assess the test result.
 			</p>
-			<p>The <code>rejected</code> property is a boolean signaling whether the null hypothesis of the test was rejected. The null hypothesis, which is often denoted as H0, denotes the case when there is no difference. The alternative hypothesis, which corresponds to the existence of a difference, is denoted as H1.</p>
-
-			<p>You can use the <code>.print()</code> method of the returned object to view a pretty-printed output, which will print the exact definition of the alternative hypothesis for the given test.</p>
-
+			<p>
+				The <code>rejected</code> property is a boolean signaling whether the null hypothesis of the test was rejected. The null hypothesis, which is often denoted as H0, denotes the case when there is no difference. The alternative hypothesis, which corresponds to the existence of a difference, is denoted as H1.
+			</p>
+			<p>
+				You can use the <code>.print()</code> method of the returned object to view a pretty-printed output, which will print the exact definition of the alternative hypothesis for the given test.
+			</p>
 			<pre><code language="javascript">
 &gt; out.print()</code></pre>
-
-			<p>For our given problem, do we conclude that the first page or the second page is more efficient at converting users to your site?</p>
-
-			<p>Observe that there is an inherent uncertainty in the test decision, i.e. there is a small probability that you might have reached a conclusion that is not actually true. How large this is this probability? When all assumptions of the tests are satisfied, the significance level of a test, denoted by the greek letter <code>alpha</code> gives you the probability of an error <i>in case you ended up rejecting the null hypothesis even though it is true</i>. The machinery of hypothesis testing gives us only this guarantee, but none for the case in which we fail to reject the null hypothesis.</p>
-
+			<p>
+				For our given problem, do we conclude that the first page or the second page is more efficient at converting users to your site?
+			</p>
+			<p>
+				Observe that there is an inherent uncertainty in the test decision, i.e. there is a small probability that you might have reached a conclusion that is not actually true. How large this is this probability? When all assumptions of the tests are satisfied, the significance level of a test, denoted by the greek letter <code>alpha</code> gives you the probability of an error <i>in case you ended up rejecting the null hypothesis even though it is true</i>. The machinery of hypothesis testing gives us only this guarantee, but none for the case in which we fail to reject the null hypothesis.
+			</p>
 			<aside class="special">
 				<p>
 					By default, <code>ttest2</code> and the other statistical tests that ship with <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> test for an undirectional effect. This is called a <i>two-sided</i> test. Whenever you have prior beliefs about which group has a larger effect, consider running a <i>one-sided</i> test by setting the <code>alternative</code> option of the test. For illustratory purposes, rerun the test for the landing pages trying out both one-sided tests and observe how the alternative hypothesis and test result change. However, keep in mind that in reality you should choose settle on the direction of the test before looking at the data.
