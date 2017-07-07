@@ -387,11 +387,14 @@
 				Based on the test results, do we conclude that the first page or the second page is more effective at converting visitors?
 			</p>
 			<p>
-				Observe that there is an inherent uncertainty in the test decision, i.e. there is a small probability that you might have reached a conclusion that is not actually true. How large this is this probability? When all assumptions of the tests are satisfied, the significance level of a test, denoted by the greek letter <code>alpha</code> gives you the probability of an error <i>in case you ended up rejecting the null hypothesis even though it is true</i>. The machinery of hypothesis testing gives us only this guarantee, but none for the case in which we fail to reject the null hypothesis.
+				Observe that the test decision has an inherent uncertainty; i.e., a small probability exists that you might have reached a false conclusion. How large is this probability?
+			</p>
+			<p>
+				When all test assumptions are satisfied, the significance level of a test, commonly denoted by the Greek letter <code>alpha</code>, informs you as to the probability that you reject the null hypothesis even though the null hypothesis is true. Hypothesis testing gives us <strong>only</strong> this guarantee and does <strong>not</strong> provide any guarantees when we fail to reject a false null hypothesis.
 			</p>
 			<aside class="special">
 				<p>
-					By default, <code>ttest2</code> and the other statistical tests that ship with <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> test for an undirectional effect. This is called a <i>two-sided</i> test. Whenever you have prior beliefs about which group has a larger effect, consider running a <i>one-sided</i> test by setting the <code>alternative</code> option of the test. For illustratory purposes, rerun the test for the landing pages trying out both one-sided tests and observe how the alternative hypothesis and test result change. However, keep in mind that in reality you should choose settle on the direction of the test before looking at the data.
+					By default, <code>ttest2()</code> and the other <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> statistical tests test for a non-directional effect. This is called a <i>two-sided</i> test. Whenever you have prior beliefs about which group has a larger effect, consider running a <i>one-sided</i> test by setting the <code>alternative</code> option of the test. For illustration purposes, rerun the test for the landing pages using one-sided tests and observe how the alternative hypothesis and test result change. Keep in mind, however, that you should choose a test direction <strong>before</strong> looking at the data.
 				</p>
 			</aside>
 
