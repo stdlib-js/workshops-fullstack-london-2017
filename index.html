@@ -340,28 +340,81 @@
 				Now that we have rendered our plot and generated HTML, we need to generate the view (i.e., insert the plot into our page). To do so, we must first select the element into which we want to insert our plot. For convenience, we have already created a placeholder element. To select the element,
 			</p>
 			<pre><code language="javascript">
-&gt; var el = document.querySelector( '#plot-1' )</code></pre>
+&gt; var el = document.querySelector( '#basic-plot' )</code></pre>
 			<p>
 				To insert the plot,
 			</p>
 			<pre><code language="javascript">
 &gt; el.innerHTML = html</code></pre>
-			<figure id="plot-1" align="center">
+			<figure id="basic-plot" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
-				<figcaption>Figure #plot-1: A basic plot.</figcaption>
+				<figcaption>Figure #basic-plot: A basic plot.</figcaption>
 			</figure>
 			<p>
 				The plot view should look similar to the following (assuming the same data):
 			</p>
 			<figure align="center">
-				<img alt="Basic plot" src="img/plot_1.png" style="max-width: 600px;">
+				<img alt="Basic plot" src="img/basic_plot.png" style="max-width: 600px;">
 				<figcaption>Figure E1: Expected plot.</figcaption>
 			</figure>
 
 			<h3>Plot Types</h3>
 			<p>
-				TODO
+				In order to better familiarize ourselves with the plot API, let us create a few customized plots. As before, we will create some data, but this time we will generate random data using <code>base.random.randn()</code>, which is a <a title="Pseudorandom number generator" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">pseudorandom number generator</a> (PRNG) for generating <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normally distributed</a> pseudorandom numbers (i.e., numbers which, when combined in aggregate, form a bell-shaped curve).
 			</p>
+			<aside class="special">
+				<p>
+					A pseudorandom number generator (PRNG) is an algorithm for generating number sequences whose properties approximate the properties of random number sequences. A PRNG does not generate a truly random sequence because a PRNG is completely determined by its initial value, a <i>seed</i>. Because PRNGs are deterministic, a PRNG is also known as a <i>deterministic random bit generator</i> (DRBG).
+				</p>
+			</aside>
+			<pre><code language="javascript">
+&gt; var x = new Float64Array( 100 );
+&gt; var y = new Float64Array( 100 );
+&gt; inmap( x, function () { return base.random.randn(); } );
+&gt; inmap( y, function () { return base.random.randn(); } );</code></pre>
+			<p>
+				And, as before, we will create a new plot using the <code>plot()</code> function.
+			</p>
+			<pre><code language="javascript">
+&gt; var plt = plot( [x], [y] );</code></pre>
+			<p>
+				We can customize the plot instance by setting various plot properties. For instance, to set the plot <i>title</i>, we set the <code>title</code> property.
+			</p>
+			<pre><code language="javascript">
+&gt; plt.title = 'Scatter';</code></pre>
+			<p>
+				To generate a <a title="Scatter plot" href="https://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> rather than a <a title="Line chart" href="https://en.wikipedia.org/wiki/Line_chart">line chart</a> (see above), we disable the plot <i>line style</i> and specify a plot <i>symbol</i> (i.e., a visual encoding for each datum).
+			</p>
+			<pre><code language="javascript">
+&gt; plt.lineStyle = 'none';
+&gt; plt.symbols = 'close-circle';</code></pre>
+			<p>
+				By default, a plot "hugs" the data, meaning that axis limits are defined by the minimum and maximum data values along a given axis. To override this behavior, we can set plot properties which explicitly define axis limits.
+			</p>
+			<pre><code language="javascript">
+&gt; plt.xMin = -5.0;
+&gt; plt.xMax = 5.0;
+&gt; plt.yMin = -5.0;
+&gt; plt.yMax = 5.0;</code></pre>
+			<p>
+				Similar to before, we will render our plot, use <code>vdom2html()</code> to generate HTML, select a DOM element into which we want to insert our plot, and then inject the rendered HTML.
+			</p>
+			<pre><code language="javascript">
+&gt; var vtree = plt.render();
+&gt; var html = vdom2html( vtree );
+&gt; var el = document.querySelector( '#scatter-plot' );
+&gt; el.innerHTML = html;</code></pre>
+			<figure id="scatter-plot" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #scatter-plot: A scatter plot.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="Scatter plot" src="img/scatter_plot.png" style="max-width: 600px;">
+				<figcaption>Figure E2: Expected plot.</figcaption>
+			</figure>
 		</google-codelab-step>
 
 		<!-- Statistical Tests -->
