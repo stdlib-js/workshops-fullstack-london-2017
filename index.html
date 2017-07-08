@@ -317,12 +317,12 @@
 				Now that we have some data, let us plot it! To do so, we must first create a plot instance.
 			</p>
 			<pre><code language="javascript">
-&gt; var plt = plot( [x], [y] )</code></pre>
+&gt; var plt1 = plot( [x], [y] )</code></pre>
 			<p>
 				At this point, nothing is rendered. To render the plot,
 			</p>
 			<pre><code language="javascript">
-&gt; var vtree = plt.render()</code></pre>
+&gt; var vtree = plt1.render()</code></pre>
 			<p>
 				The output of the <code>render()</code> method is <a title="Virtual DOM" href="https://github.com/Matt-Esch/virtual-dom">Virtual DOM</a>, which is a declarative way of representing the DOM.
 			</p>
@@ -376,32 +376,32 @@
 				And, as before, we will create a new plot using the <code>plot()</code> function.
 			</p>
 			<pre><code language="javascript">
-&gt; var plt = plot( [x], [y] );</code></pre>
+&gt; var plt2 = plot( [x], [y] );</code></pre>
 			<p>
 				We can customize the plot instance by setting various plot properties. For instance, to set the plot <i>title</i>, we set the <code>title</code> property.
 			</p>
 			<pre><code language="javascript">
-&gt; plt.title = 'Scatter';</code></pre>
+&gt; plt2.title = 'Scatter';</code></pre>
 			<p>
 				To generate a <a title="Scatter plot" href="https://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> rather than a <a title="Line chart" href="https://en.wikipedia.org/wiki/Line_chart">line chart</a> (see above), we disable the plot <i>line style</i> and specify a plot <i>symbol</i> (i.e., a visual encoding for each datum).
 			</p>
 			<pre><code language="javascript">
-&gt; plt.lineStyle = 'none';
-&gt; plt.symbols = 'close-circle';</code></pre>
+&gt; plt2.lineStyle = 'none';
+&gt; plt2.symbols = 'close-circle';</code></pre>
 			<p>
 				By default, a plot "hugs" the data, meaning that axis limits are defined by the minimum and maximum data values along a given axis. To override this behavior, we can set plot properties which explicitly define axis limits.
 			</p>
 			<pre><code language="javascript">
-&gt; plt.xMin = -5.0;
-&gt; plt.xMax = 5.0;
-&gt; plt.yMin = -5.0;
-&gt; plt.yMax = 5.0;</code></pre>
+&gt; plt2.xMin = -5.0;
+&gt; plt2.xMax = 5.0;
+&gt; plt2.yMin = -5.0;
+&gt; plt2.yMax = 5.0;</code></pre>
 			<p>
 				Similar to before, we will render our plot, use <code>vdom2html()</code> to generate HTML, select a DOM element into which we want to insert our plot, and then inject the rendered HTML.
 			</p>
 			<pre><code language="javascript">
 &gt; var el = document.querySelector( '#scatter-plot' );
-&gt; el.innerHTML = vdom2html( plt.render() );</code></pre>
+&gt; el.innerHTML = vdom2html( plt2.render() );</code></pre>
 			<figure id="scatter-plot" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #scatter-plot: A scatter plot.</figcaption>
@@ -412,6 +412,42 @@
 			<figure align="center">
 				<img alt="Scatter plot" src="img/scatter_plot.png" style="max-width: 600px;">
 				<figcaption>Figure E2: Expected plot.</figcaption>
+			</figure>
+			<p>
+				For our next plot, let us try plotting multiple lines. Instead of a single <code>x</code> and <code>y</code>, we will want to generate multiple datasets. Similar to before, we can generate <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normally distributed</a> pseudorandom data, but this time we will use <code>base.random.normal</code> to draw pseudorandom numbers from a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> with mean <code>&mu;</code> and standard deviation <code>&sigma;</code>.
+			</p>
+			<pre><code language="javascript">
+&gt; var x = new Int8Array( 100 );
+&gt; inmap( x, function ( v, i ) { return i; } );
+&gt; var y1 = new Float64Array( x.length );
+&gt; var y2 = new Float64Array( x.length );
+&gt; inmap( y1, function () { return base.random.normal( 50.0, 20.0 ); } );
+&gt; inmap( y2, function () { return base.random.normal( 60.0, 10.0 ); );</code></pre>
+		  <p>
+				In the above, we generate a single <code>x</code> vector, which can be reused when plotting against <code>y1</code> and <code>y2</code>. Now that we have data to plot, we can create a plot instance and customize accordingly, specifying properties for each data series.
+		  </p>
+		  <pre><code language="javascript">
+&gt; var plt3 = plot( [x,x], [y1,y2] );
+&gt; plt3.title = 'Multiple Lines';
+&gt; plt3.lineStyle = [ '-', ':' ];
+&gt; plt3.lineOpacity = [ 0.9, 0.3 ];
+&gt; plt3.colors = [ 'red', 'green' ];</code></pre>
+			<p>
+				To plot the data, we select the placeholder DOM element and insert the rendered HTML.
+			</p>
+			<pre><code language="javascript">
+&gt; var el = document.querySelector( '#multiple-line-plot' );
+&gt; el.innerHTML = vdom2html( plt3.render() );</code></pre>
+			<figure id="multiple-line-plot" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #multiple-line-plot: A plot with multiple lines.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="Multiple line plot" src="img/multiple_line_plot.png" style="max-width: 600px;">
+				<figcaption>Figure E3: Expected plot.</figcaption>
 			</figure>
 		</google-codelab-step>
 
