@@ -449,6 +449,29 @@
 				<img alt="Multiple line plot" src="img/multiple_line_plot.png" style="max-width: 600px;">
 				<figcaption>Figure E3: Expected plot.</figcaption>
 			</figure>
+			<p>
+				We can also combine plot types. For our next plot, let us combine a <a title="Line chart" href="https://en.wikipedia.org/wiki/Line_chart">line chart</a> with a <a title="Scatter plot" href="https://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a>. Using the same data from the multiple line plot,
+			</p>
+			<pre><code language="javascript">
+&gt; var plt4 = plot( [x,x], [y1,y2] );
+&gt; plt4.title = 'Line + Scatter';
+&gt; plt4.lineStyle = [ '-', ':' ];
+&gt; plt4.symbols = [ 'closed-circle', 'open-circle' ];
+&gt; var el4 = document.querySelector( '#line-scatter-plot' );
+&gt; el4.innerHTML = vdom2html( plt4.render() );</code></pre>
+			<figure id="line-scatter-plot" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #line-scatter-plot: A line chart combined with a scatter plot.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="Line chart and scatter plot" src="img/line_scatter_plot.png" style="max-width: 600px;">
+				<figcaption>Figure E4: Expected plot.</figcaption>
+			</figure>
+
+			<!-- exercises: recreate top figure, generate other plots, possibly with other PRNGs; add placeholder figures for exercises -->
 		</google-codelab-step>
 
 		<!-- Statistical Tests -->
