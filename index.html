@@ -391,7 +391,20 @@
     0, 0, 0, 0, 0, 0, 0, 1, 0, 0
 ];</code></pre>
 			<p>
-				A cursory look at the data suggests that the first page is more effective at converting users. Using our previously defined <code>mean()</code> function, calculate the proportion of users who signed up. Pretty striking difference, right?
+				A cursory look at the data suggests that the first page is more effective at converting users. To be a bit more quantitative, let us calculate the proportion of users (<i>mean</i>) who signed up per page using the <code>reduce()</code> function.
+			</p>
+			<pre><code language="javascript">
+&gt; function sum( acc, v ) { return acc + v; };
+&gt; var sum1 = reduce( page1, 0, sum )
+7
+&gt; var sum2 = reduce( page2, 0, sum )
+2
+&gt; var mu1 = sum1 / page1.length
+0.23333333333333334
+&gt; var mu2 = sum2 / page2.length
+0.06666666666666667</code></pre>
+			<p>
+				Pretty striking difference, right?
 			</p>
 			<aside class="special">
 				<p>
