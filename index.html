@@ -470,8 +470,80 @@
 				<img alt="Line chart and scatter plot" src="img/line_scatter_plot.png" style="max-width: 600px;">
 				<figcaption>Figure E4: Expected plot.</figcaption>
 			</figure>
+			<p>
+				As a last exercise, let us create another combination plot. This time we will combine a <a title="Scatter plot" href="https://en.wikipedia.org/wiki/Scatter_plot">scatter plot</a> with a <i>rug plot</i>. A <i>rug plot</i> provides a compact 1-dimensional visualization to supplement higher dimensional plots by displaying a <a title="Marginal distribution" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal distribution</a> along one axis.
+			</p>
+			<aside class="special">
+				<p>
+					Displaying a <a title="Marginal distribution" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal distribution</a> is useful in helping reveal the "shape" of data, especially when visual space is limited.
+				</p>
+			</aside>
+			<p>
+				Reusing the <code>y1</code> and <code>y2</code> data from above, we can proceed as follows
+			</p>
+			<pre><code language="javascript">
+&gt; var plt5 = plot( [y1], [y2] );
+&gt; plt5.title = 'Scatter + Rug';
+&gt; plt5.xLabel = 'y1';
+&gt; plt5.yLabel = 'y2';
+&gt; plt5.lineStyle = 'none';
+&gt; plt5.symbols = 'closed-circle';</code></pre>
+			<p>
+				To help us better compare the shapes of the two datasets, we want equal axis limits (i.e., both datasets should be plotted on the same <i>scale</i>); otherwise, we might draw incorrect conclusions when comparing the data distributions.
+			</p>
+			<pre><code language="javascript">
+&gt; plt5.xMin = -10.0;
+&gt; plt5.xMax = 110.0;
+&gt; plt5.yMin = -10.0;
+&gt; plt5.yMax = 110.0;</code></pre>
+			<p>
+				Finally, we want to display rug plots for both axes (i.e., plot <a title="Marginal distribution" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal distributions</a> for both datasets). In which case, we need to toggle the relevant plot properties.
+			</p>
+			<pre><code language="javascript">
+&gt; plt5.xRug = true;
+&gt; plt5.yRug = true;</code></pre>
+			<p>
+				At this point, we are ready to render! To do so, we proceed as we have done previously.
+			</p>
+			<pre><code language="javascript">
+&gt; var el5 = document.querySelector( '#scatter-rug-plot' );
+&gt; el5.innerHTML = vdom2html( plt5.render() );</code></pre>
+			<figure id="scatter-rug-plot" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #scatter-rug-plot: A scatter plot with rug plots displayed on both axes.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="Scatter plot combined with rug plots" src="img/scatter_rug_plot.png" style="max-width: 600px;">
+				<figcaption>Figure E5: Expected plot.</figcaption>
+			</figure>
+			<p>
+				As you may observe, <code>y1</code> is more disperse than <code>y2</code>, which is concisely conveyed by the rug plots displayed along both axes.
+			</p>
 
-			<!-- exercises: recreate top figure, generate other plots, possibly with other PRNGs; add placeholder figures for exercises -->
+			<h3>Exercises</h3>
+			<ul>
+				<li>
+					<p>
+						Recreate the figure displayed at the beginning of this lab, plotting into the element <code>#plot-exercise-1</code> provided below.
+					</p>
+					<figure id="plot-exercise-1" align="center">
+						<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+						<figcaption>Figure #plot-exercise-1: Plot for exercise 1.</figcaption>
+					</figure>
+				</li>
+				<li>
+					<p>
+						Plot the Federal Reserve Bank wage rigidity dataset <code>FRB_SF_WAGE_RIGIDITY()</code>, using the element <code>#plot-exercise-2</code> provided below. Note that this dataset has missing data.
+					</p>
+					<figure id="plot-exercise-2" align="center">
+						<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+						<figcaption>Figure #plot-exercise-2: Plot for exercise 2.</figcaption>
+					</figure>
+				</li>
+			</ul>
 		</google-codelab-step>
 
 		<!-- Statistical Tests -->
