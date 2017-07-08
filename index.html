@@ -340,12 +340,12 @@
 				Now that we have rendered our plot and generated HTML, we need to generate the view (i.e., insert the plot into our page). To do so, we must first select the element into which we want to insert our plot. For convenience, we have already created a placeholder element. To select the element,
 			</p>
 			<pre><code language="javascript">
-&gt; var el = document.querySelector( '#basic-plot' )</code></pre>
+&gt; var el1 = document.querySelector( '#basic-plot' )</code></pre>
 			<p>
 				To insert the plot,
 			</p>
 			<pre><code language="javascript">
-&gt; el.innerHTML = html</code></pre>
+&gt; el1.innerHTML = html</code></pre>
 			<figure id="basic-plot" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #basic-plot: A basic plot.</figcaption>
@@ -400,8 +400,8 @@
 				Similar to before, we will render our plot, use <code>vdom2html()</code> to generate HTML, select a DOM element into which we want to insert our plot, and then inject the rendered HTML.
 			</p>
 			<pre><code language="javascript">
-&gt; var el = document.querySelector( '#scatter-plot' );
-&gt; el.innerHTML = vdom2html( plt2.render() );</code></pre>
+&gt; var el2 = document.querySelector( '#scatter-plot' );
+&gt; el2.innerHTML = vdom2html( plt2.render() );</code></pre>
 			<figure id="scatter-plot" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #scatter-plot: A scatter plot.</figcaption>
@@ -436,8 +436,8 @@
 				To plot the data, we select the placeholder DOM element and insert the rendered HTML.
 			</p>
 			<pre><code language="javascript">
-&gt; var el = document.querySelector( '#multiple-line-plot' );
-&gt; el.innerHTML = vdom2html( plt3.render() );</code></pre>
+&gt; var el3 = document.querySelector( '#multiple-line-plot' );
+&gt; el3.innerHTML = vdom2html( plt3.render() );</code></pre>
 			<figure id="multiple-line-plot" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #multiple-line-plot: A plot with multiple lines.</figcaption>
