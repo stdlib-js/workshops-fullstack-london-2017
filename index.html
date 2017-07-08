@@ -400,10 +400,8 @@
 				Similar to before, we will render our plot, use <code>vdom2html()</code> to generate HTML, select a DOM element into which we want to insert our plot, and then inject the rendered HTML.
 			</p>
 			<pre><code language="javascript">
-&gt; var vtree = plt.render();
-&gt; var html = vdom2html( vtree );
 &gt; var el = document.querySelector( '#scatter-plot' );
-&gt; el.innerHTML = html;</code></pre>
+&gt; el.innerHTML = vdom2html( plt.render() );</code></pre>
 			<figure id="scatter-plot" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #scatter-plot: A scatter plot.</figcaption>
