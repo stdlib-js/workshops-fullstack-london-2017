@@ -4,7 +4,6 @@
 
 1. Getting to know stdlib
 
-   * plotting
    * generating random numbers
    * plotting distributions
    * performing a statistical test
@@ -14,3 +13,5 @@
 3. Synthetic speech generation using Markov Models
 
 4. Sentiment analysis of SOTU.
+
+5. Linear regression.
