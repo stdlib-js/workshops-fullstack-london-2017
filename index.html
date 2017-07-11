@@ -839,7 +839,29 @@
 		<!-- Spam Classifier -->
 
 		<google-codelab-step label="Spam Classifier" duration="15">
-
+			<p>
+				We are all plagued by the spam emails that arrive in our mailboxes each day. Flagging emails as spam is what we call a classification task, since it consists of assigning an observation into either of several categories (spam/no spam). In this lab, we will explore building our own spam classifier using a simple but well-performing statistical technique called <i>Naive Bayes</i>.
+			</p>
+			<p>
+				For this purpose, we will make use of the <code>SPAM_ASSASSIN</code> data set that ships with <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a>. We can load a copy of it and assign it to the variable <code>spam</code> as follows:
+			</p>
+				<pre><code language="javascript">
+&gt; var spam = datasets( 'SPAM_ASSASSIN' );</code></pre>
+			<p>
+				Take a few minutes to familiarize yourself with the data set (you might also want to read its documentation).
+			</p>
+			<p> For this lab, the emails from the <code>easy-ham-1</code> and <code>spam-2</code> batches will serve as our training set, from which we will build a model that can then predict whether a new email should be classified as spam. To evaluate the performance of a statistical model, it is common practice to set aside a <i>test set</i> of observations for which we know the true class, but which we hold out and do not use while building our model. This ensures that we get an unbiased estimate of how well the model will generalize once we evaluate it on our test set. Here, the emails from <code>spam-1</code>, <code>hard-ham-1</code>, and <code>easy-ham-2</code> will constitute our test set.
+			</p>
+			<p>
+			Let's store all observations belonging to the training set in a new array, as follows:
+			</p>
+			<pre><code language="javascript">
+&gt; var training = []
+&gt; for ( var i = 0; i < spam.length; i++ ) {
+&gt; 	if ( spam[i].group === 'easy-ham-1' || spam[i].group === 'spam-2' ) {
+&gt; 		training.push( spam[i] );
+&gt; 	}
+&gt; }</code></pre>
 
 			<h3>Exercises</h3>
 			<ul>
