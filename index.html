@@ -36,6 +36,10 @@
 	<meta name="twitter:description" content="Workshop for FullStack London 2017.">
 	<meta name="twitter:image" content="">
 
+	<!-- KaTeX -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
+
 	<!-- Webcomponents polyfills. Note that all HTML imports must come AFTER the polyfill to ensure that the imports are properly loaded. -->
 	<script type="text/javascript" src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
@@ -832,6 +836,55 @@
 			</google-codelab-survey>
 		</google-codelab-step>
 
+		<!-- Spam Classifier -->
+
+		<google-codelab-step label="Spam Classifier" duration="15">
+
+
+			<h3>Exercises</h3>
+			<ul>
+				<li>First</li>
+				<li>Second</li>
+			</ul>
+
+			<h3>Survey</h3>
+			<google-codelab-survey survey-id="spam-classifier">
+				<h4>Did you find this lab useful?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Not useful</paper-radio-button>
+					<paper-radio-button>Somewhat useful</paper-radio-button>
+					<paper-radio-button>Useful</paper-radio-button>
+					<paper-radio-button>Very useful</paper-radio-button>
+				</paper-radio-group>
+
+				<h4>How do you feel about the length of this lab?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Too short</paper-radio-button>
+					<paper-radio-button>Just right</paper-radio-button>
+					<paper-radio-button>Too long</paper-radio-button>
+				</paper-radio-group>
+
+				<h4>Apart from the final exercises, how difficult did you find this lab?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Very Easy</paper-radio-button>
+					<paper-radio-button>Easy</paper-radio-button>
+					<paper-radio-button>Just Right</paper-radio-button>
+					<paper-radio-button>Difficult</paper-radio-button>
+					<paper-radio-button>Very Difficult</paper-radio-button>
+				</paper-radio-group>
+
+				<h4>How difficult did you find the exercises for this lab?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Very Easy</paper-radio-button>
+					<paper-radio-button>Easy</paper-radio-button>
+					<paper-radio-button>Just Right</paper-radio-button>
+					<paper-radio-button>Difficult</paper-radio-button>
+					<paper-radio-button>Very Difficult</paper-radio-button>
+				</paper-radio-group>
+			</google-codelab-survey>
+
+		</google-codelab-step>
+
 		<!-- Conclusion -->
 
 		<google-codelab-step label="Conclusion" duration="2">
@@ -908,6 +961,20 @@
 
 	<!-- Scripts -->
 	<script type="text/javascript" src="js/bundle.js"></script>
+	<script>
+		window.onload = function onLoad() {
+				var tex = document.getElementsByClassName( 'tex' );
+				Array.prototype.forEach.call( tex, function renderEquation( el ) {
+					if ( el.hasAttribute( 'displayMode' )  ) {
+						katex.render( el.getAttribute( 'data-eqn' ), el, {
+							'displayMode': true
+						});
+					} else {
+						katex.render( el.getAttribute( 'data-eqn' ), el );
+					}
+				});
+		};
+	</script>
 
 </body>
 </html>
