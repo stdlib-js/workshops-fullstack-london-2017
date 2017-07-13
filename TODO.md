@@ -3,6 +3,7 @@
 * [ ] Move repo to stdlib.
 * [ ] Store survey responses
 * [ ] Anscombe's quartet
+* [ ] re-alias `help`
 
 
 ## Workshop Lessons
