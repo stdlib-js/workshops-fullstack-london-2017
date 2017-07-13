@@ -966,8 +966,13 @@
 			<aside class="special">
 				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
 				<p>
-					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the document:
-					<div class="tex" data-eqn="P(c|d) = \frac{P(d|c) P(c)}{P(d)}" displayMode></div>
+					Naive Bayes is a classification algorithm that allows us to estimate the conditional probability that an observation belongs to a certain class given a set of features <b>x</b>. When used for modeling text documents, their words are usually used as features, but this is by no means a requirement. The model derives its name from the use of <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> and the fact that is based on the "naive" assumption that the presence of any feature does not influence the probabilities of observing any other feature, i.e. the probability of observing an observation's features given class <i>c</i>, <span class="tex" data-eqn="P(\mathbf{x}|c)" ></span>, can be factorized as the product over all the individual feature probabilities. In our case, we may write this as <span class="tex" data-eqn="P(\mathbf{x}|c) = \prod_w P(w|c)" ></span>, where the product is taken over all words in the respective document.
+					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the observed features:
+				</p>
+					<div class="tex" data-eqn="P(c|\mathbf{x}) = \frac{P(\mathbf{x}|c) P(c)}{P(\mathbf{x})}"
+					displayMode></div>
+				<p>
+					Our decision rule of whether an email should be classified as spam is then quite simple: We can drop the denominator and calculate <span class="tex" data-eqn="P(\mathbf{x}|c) P(c) =  \prod_w P(w|c) P(c)"></span> for each class, assigning the observation to the class for which the conditional probability is larger. How do we obtain these probabilities? We estimate them by their empirical frequencies: We replace <span class="tex" data-eqn="P(c)"></span> by the percentage of documents from the respective class in our data corpus, and <span class="tex" data-eqn="P(w|c)"></span> by its relative frequency, i.e. the number of times the word appeared in documents of class <i>c</i> divided by the overall number of tokens in that class.
 				</p>
 			</aside>
 			<p>
@@ -1009,14 +1014,14 @@
     var body = getBody( text );
     var tokens = tokenize( body );
     var spamScore = base.ln( classProbs[ "spam" ] );
-    for ( let i = 0; i < tokens.length; i++ ) {
+    for ( let i = 0; i &lt; tokens.length; i++ ) {
         spamScore += base.ln( wordSpamProb( tokens[i] ) );
     }
     var nospamScore = base.ln( classProbs[ "nospam" ] );
-    for ( let i = 0; i < tokens.length; i++ ) {
+    for ( let i = 0; i &lt; tokens.length; i++ ) {
         nospamScore += base.ln( wordNospamProb( tokens[i] ) );
     }
-    return spamScore > nospamScore ? 'spam' : 'nospam';
+    return spamScore &gt; nospamScore ? 'spam' : 'nospam';
 }</code></pre>
 			<p>
 				Test the function out on a few of the emails from <code>spam</code>. Do we make the correct predictions?
