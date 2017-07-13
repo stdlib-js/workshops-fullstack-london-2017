@@ -942,6 +942,18 @@
     x.tokens = tokenize( x.body );
     return x;
 });</code></pre>
+			<aside class="special">
+				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
+				<p>
+					Naive Bayes is a classification algorithm that allows us to estimate the conditional probability that an observation belongs to a certain class given a set of features <b>x</b>. When used for modeling text documents, their words are usually used as features, but this is by no means a requirement. The model derives its name from the use of <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> and the fact that is based on the "naive" assumption that the presence of any feature does not influence the probabilities of observing any other feature, i.e. the probability of observing an observation's features given class <i>c</i>, <span class="tex" data-eqn="P(\mathbf{x}|c)" ></span>, can be factorized as the product over all the individual feature probabilities. In our case, we may write this as <span class="tex" data-eqn="P(\mathbf{x}|c) = \prod_w P(w|c)" ></span>, where the product is taken over all words in the respective document.
+					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the observed features:
+				</p>
+					<div class="tex" data-eqn="P(c|\mathbf{x}) = \frac{P(\mathbf{x}|c) P(c)}{P(\mathbf{x})}"
+					displayMode></div>
+				<p>
+					Our decision rule of whether an email should be classified as spam is then quite simple: We can drop the denominator and calculate <span class="tex" data-eqn="P(\mathbf{x}|c) P(c) =  \prod_w P(w|c) P(c)"></span> for each class, assigning the observation to the class for which the conditional probability is larger. How do we obtain these probabilities? We estimate them by their empirical frequencies: We replace <span class="tex" data-eqn="P(c)"></span> by the percentage of documents from the respective class in our data corpus, and <span class="tex" data-eqn="P(w|c)"></span> by its relative frequency, i.e. the number of times the word appeared in documents of class <i>c</i> divided by the overall number of tokens in that class.
+				</p>
+			</aside>
 			<p>
 				Before building our model, let us explore the frequency differences for the tokens in both the spam and non-spam groups and find which ones help in discriminating between the two classes. For this purspose, we will divide our training data into two parts, and then lump the tokens from all their documents together into a single array, which we can then count to obtain the frequencies of the tokens in each group. We can use the <code>groupBy</code> function to group our training data into the two groups as follows:
 			</p>
@@ -972,7 +984,7 @@
 			<p>
 				However, notice that the absolute frequencies might be misleading since the groups are not equally represented in our training set, with <code>spam-2</code> containing <code>1396</code> and <code>easy-ham-1</code> containing <code>2500</code> observations. Hence, it makes more sense to look at <i>relative frequencies</i>, which take the different group sizes into account. For future reference, let us first store the relative group frequencies in an <code>object</code>:
 			</p>
-				<pre><code language="javascript">
+			<pre><code language="javascript">
 &gt; var groupProbs = {
     'spam': 1396 / ( 1396 + 2500 ),
     'nospam': 2500 / ( 1396 + 2500 )
@@ -988,31 +1000,10 @@
     return nospamFreqs[ word ] / nospamTokens.length;
 }</code></pre>
 			<p>
-				Invoke the functions for the words you have looked at before. Now think about what would happen if we were to call either function for a word that did not occur in the respective group?
-			</p>
-			<p>
-				For our classifier to work for documents which contain words unknown to our corpus, we will have to change the b
-			</p>
-			<aside class="special">
-				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
-				<p>
-					Naive Bayes is a classification algorithm that allows us to estimate the conditional probability that an observation belongs to a certain class given a set of features <b>x</b>. When used for modeling text documents, their words are usually used as features, but this is by no means a requirement. The model derives its name from the use of <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> and the fact that is based on the "naive" assumption that the presence of any feature does not influence the probabilities of observing any other feature, i.e. the probability of observing an observation's features given class <i>c</i>, <span class="tex" data-eqn="P(\mathbf{x}|c)" ></span>, can be factorized as the product over all the individual feature probabilities. In our case, we may write this as <span class="tex" data-eqn="P(\mathbf{x}|c) = \prod_w P(w|c)" ></span>, where the product is taken over all words in the respective document.
-					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the observed features:
-				</p>
-					<div class="tex" data-eqn="P(c|\mathbf{x}) = \frac{P(\mathbf{x}|c) P(c)}{P(\mathbf{x})}"
-					displayMode></div>
-				<p>
-					Our decision rule of whether an email should be classified as spam is then quite simple: We can drop the denominator and calculate <span class="tex" data-eqn="P(\mathbf{x}|c) P(c) =  \prod_w P(w|c) P(c)"></span> for each class, assigning the observation to the class for which the conditional probability is larger. How do we obtain these probabilities? We estimate them by their empirical frequencies: We replace <span class="tex" data-eqn="P(c)"></span> by the percentage of documents from the respective class in our data corpus, and <span class="tex" data-eqn="P(w|c)"></span> by its relative frequency, i.e. the number of times the word appeared in documents of class <i>c</i> divided by the overall number of tokens in that class.
-				</p>
-			</aside>
-			<p>
-
-			</p>
-			<p>
-
-
+				Invoke the functions for the words you have looked at before. Now think about what would happen if we were to call either function for a word that did not occur in the respective group? For our classifier to work for documents which contain words unknown to our corpus, we will have to change the way how we estimate the different word probabilities. We will make use of a technique called <i>Laplace Smoothing</i>, which in its simplest form just consists of adding a count of one to all words, even those which do not appear in documents of a given class. With the number of unique tokens in our training data set being equal to 76,709, we can adapt the functions as follows:
 			</p>
 			<pre><code language="javascript">
+&gt; var vocabSize = 76709;
 &gt; function wordSpamProb( word ) {
     var nk = spamFreqs[ word ] || 0;
     return ( nk + 1 ) / ( spamTokens.length + vocabSize );
@@ -1021,9 +1012,6 @@
     var nk = nospamFreqs[ word ] || 0;
     return ( nk + 1 ) / ( nospamTokens.length + vocabSize );
 }</code></pre>
-			<p>
-
-			</p>
 			<aside class="special">
 				<h3>Laplace Smoothing</h3>
 				<p>
@@ -1036,9 +1024,8 @@
 				where <span class="tex" data-eqn="count(w,c)"></span> is the number of times word <i>w</i> appears in the documents of class <i>c</i>, <span class="tex" data-eqn="N_c"></span> is its total number of tokens, and <span class="tex" data-eqn="|V|"></span> is the overall size of the vocabulary. Often, <span class="tex" data-eqn="\alpha"></span> is chosen to be one. <i>Laplace Smoothing</i> is preferable compared to simply discarding unknown tokens because these should decrease the probability of belonging to the respective class; they should just not turn it to zero.
 			</aside>
 			<p>
-
+				Our workhorse function to classify new emails can now be implemented in a relatively straightforward manner. Instead of directly evaluating <span class="tex" data-eqn="\prod_w P(w|c)"></span>, which is prone to underflow issues since many of the probabilities will be small, we will take the natural logarithm and calculate the sum <span class="tex" data-eqn="\sum_w \ln P(w|c)"></span> instead. Taking the logarithm is a monotonic transformation, which does not change the rank order of the untransformed values. Therefore, predictions made from the model are not affected by this choice.
 			</p>
-			<p>Our workhorse function to classify new emails can now be implemented in a relatively straightforward manner:</p>
 			<pre><code language="javascript">
 &gt; function classifyEmail( text ) {
     var body = getBody( text );
