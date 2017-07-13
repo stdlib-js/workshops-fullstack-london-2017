@@ -895,7 +895,7 @@
 				You should now be able to call <code>extractBody()</code> on any of the spam texts. For example, try <code>extractBody( spam[ 0 ].text )</code> to look at the transformed text for the first mail. A large part of building a statistical model is the selection of variables that are useful in predicting the outcome of interest. In our case, we will just use the words appearing in the texts, but observe that we may throw away useful information by doing so. For example, we might speculate that spam mails contain more capitalized or uppercased words in order to grab the attention of the recipients.
 			</p>
 			<p>
-				Our <i>Naive Bayes</i> model relies on a so-called <i>bag-of-words</i> representation of the documents in our data set. To generate this representation, we will tokenize our texts, i.e. split them up into pieces (the so called <i>tokens</i>).
+				Our <i>Naive Bayes</i> model relies on a so-called <a href="https://en.wikipedia.org/wiki/Bag-of-words_model">bag-of-words</a> representation of the documents in our data set. To generate this representation, we will tokenize our texts, i.e. split them up into pieces (the so called <i>tokens</i>).
 			</p>
 			<aside class="special">
 				<p>
@@ -912,7 +912,7 @@
     return x;
 });</code></pre>
 			<p>
-				Next, let us explore the frequency differences for the different tokens in both the spam and non-spam groups. We can use the <code>groupBy</code> function to group our training data into these two groups as follows:
+				Before building our model, let us explore the frequency differences for the tokens in both the spam and non-spam groups and find which ones help in discriminating between the two classes. For this purspose, we will divide our training data into two parts, and then lump the tokens from all their documents together into a single array, which we can then count to obtain the frequencies of the tokens in each group. We can use the <code>groupBy</code> function to group our training data into the two groups as follows:
 			</p>
 			<pre><code language="javascript">
 &gt; var grouped = groupBy( training, function( x ) {
@@ -925,8 +925,10 @@
 				We can now lump all tokens from texts belonging to either group together, for example by using the following code:
 			<p>
 			<pre><code language="javascript">
-&gt; var spamTokens = flattenArray( pluck( grouped.spam, 'tokens' ) );
-&gt; var nospamTokens = flattenArray( pluck( grouped.nospam, 'tokens' ) );</code></pre>
+&gt; var spamTokens = pluck( grouped.spam, 'tokens' );
+&gt; spamTokens = flattenArray( spamTokens );
+&gt; var nospamTokens = pluck( grouped.nospam, 'tokens' );
+&gt; nospamTokens = flattenArray( nospamTokens )</code></pre>
 			<p>
 				Let us use the <code>countBy</code> function to calculate the frequencies. Notice that we supply the <code>identity</code> function as the second argument since we want to group the array elements by their actual values.
 			</p>
@@ -934,7 +936,7 @@
 &gt; var spamFreqs = countBy( spamTokens, identity );
 &gt; var nospamFreqs = countBy( nospamTokens, identity );</code></pre>
 			<p>
-				With this convenient representation in hand, we can explore the <i>absolute frequencies</i> of the tokens in the two groups. Think of a few words that you would expect to show up much more Frequently in spam mails, and check whether the frequencies support this hypothesis.
+				With this convenient representation in hand, we can explore the <i>absolute frequencies</i> of the tokens in the two groups. Think of a few words that you would expect to show up much more frequently in spam mails, and check whether the frequencies support this hypothesis.
 			</p>
 			<p>
 				However, notice that the absolute frequencies might be misleading since the groups are not equally represented in our training set, with <code>spam-2</code> containing <code>1396</code> and <code>easy-ham-1</code> containing <code>2500</code> observations. Hence, it makes more sense to look at <i>relative frequencies</i>, which take the different group sizes into account. For future reference, let us first store the relative group frequencies in an <code>object</code>:
@@ -963,7 +965,8 @@
 			<aside class="special">
 				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
 				<p>
-
+					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> let's us then switch the conditioning and calculate the class probabilities given the document:
+					<div class="tex" data-eqn="P(c|d) = \frac{P(d|c) P(c)}{P(d)}" displayMode></div>
 				</p>
 			</aside>
 			<p>
@@ -988,8 +991,13 @@
 			<aside class="special">
 				<h3>Laplace Smoothing (add-1)</h3>
 				<p>
-
+					Estimating the word probabilities <span class="tex" data-eqn="P(w|c)"></span> by the empirical frequencies is problematic because it would mean that for any word not appearing in any of the documents of the respective class, we would estimate is as zero. However, this would imply that when classifying a new document containing a word not present in the documents of a given class, it would get assigned a probability of zero, even though it may otherwise might look a lot like the documents from said class. To deal with this issue, one could simply drop words that are unknown to the training corpus, but a better approach is <i>Laplace Smoothing</i>, in which a non-zero probability is assigned to every word beforehand. This is achieved by adding a value <span class="tex" data-eqn="\alpha"></span> to any count, so that the probability estimates change from
 				</p>
+				<div class="tex" data-eqn="\hat P(w|c) = \frac{count(w,c)}{\sum_{w \text{ in } V} count(w,c) } = \frac{count(w,c)}{N_c}" displayMode></div>
+				<p>to</p>
+				<div class="tex" data-eqn="\hat P(w|c) = \frac{count(w,c)}{\sum_{w \text{ in } V} count(w,c) }= \frac{count(w,c) + \alpha}{N_c+\alpha|V|}" displayMode></div>
+				</p>
+				where <span class="tex" data-eqn="\operatorname{count}(w,c)"></span> is the number of times word <i>w</i> appears in the documents of class <i>c</i>, <span class="tex" data-eqn="N_c"></span> is its total number of tokens, and <span class="tex" data-eqn="|V|"></span> is the overall size of the vocabulary. Often, <span class="tex" data-eqn="\alpha"></span> is chosen to be one. <i>Laplace Smoothing</i> is preferable compared to simply discarding unknown tokens because these should decrease the probability of belonging to the respective class; they should just not turn it to zero.
 			</aside>
 			<p>
 
