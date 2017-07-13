@@ -36,15 +36,12 @@
 	<meta name="twitter:description" content="Workshop for FullStack London 2017.">
 	<meta name="twitter:image" content="">
 
-	<!-- KaTeX -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
-
 	<!-- Webcomponents polyfills. Note that all HTML imports must come AFTER the polyfill to ensure that the imports are properly loaded. -->
 	<script type="text/javascript" src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
 	<!-- Styles -->
 	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css" integrity="sha384-wITovz90syo1dJWVh32uuETPVEtGigN07tkttEqPv+uR2SE/mbQcG7ATL28aI9H0" crossorigin="anonymous">
 
 	<style>
 		body {
@@ -1141,19 +1138,45 @@
 
 	<!-- Scripts -->
 	<script type="text/javascript" src="js/bundle.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
 	<script>
-		window.onload = function onLoad() {
-				var tex = document.getElementsByClassName( 'tex' );
-				Array.prototype.forEach.call( tex, function renderEquation( el ) {
-					if ( el.hasAttribute( 'displayMode' )  ) {
-						katex.render( el.getAttribute( 'data-eqn' ), el, {
-							'displayMode': true
-						});
-					} else {
-						katex.render( el.getAttribute( 'data-eqn' ), el );
+		(function() {
+			'use strict';
+
+			/**
+			* Render a TeX equation.
+			*
+			* @private
+			* @param {DOMElement} el - element to render
+			*/
+			function render( el ) {
+				var attr = el.getAttribute( 'data-eqn' );
+				if ( el.hasAttribute( 'displayMode' )  ) {
+					katex.render( attr, el, {
+						'displayMode': true
+					});
+				} else {
+					katex.render( attr, el );
+				}
+			} // end FUNCTION render()
+
+			/**
+			* Callback invoked upon page load.
+			*
+			* @private
+			*/
+			function onLoad() {
+					var elements;
+					var i;
+
+					elements = document.querySelectorAll( '.tex' );
+					for ( i = 0; i < elements.length; i++ ) {
+						render( elements[ i ] );
 					}
-				});
-		};
+			} // end FUNCTION onLoad()
+
+			window.onload = onLoad;
+		})();
 	</script>
 
 </body>
