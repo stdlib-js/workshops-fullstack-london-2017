@@ -838,7 +838,7 @@
 
 		<!-- Spam Classifier -->
 
-		<google-codelab-step label="Spam Classifier" duration="15">
+		<google-codelab-step label="Spam Classifier" duration="20">
 			<p>
 				We are all plagued by the spam emails that arrive in our mailboxes each day. Flagging emails as spam is what we call a classification task, since it consists of assigning an observation into either of several categories (spam/no spam). In this lab, we will explore building our own spam classifier using a simple but well-performing statistical technique called <i>Naive Bayes</i>.
 			</p>
@@ -858,15 +858,165 @@
 			<pre><code language="javascript">
 &gt; var training = []
 &gt; for ( var i = 0; i < spam.length; i++ ) {
-&gt; 	if ( spam[i].group === 'easy-ham-1' || spam[i].group === 'spam-2' ) {
-&gt; 		training.push( spam[i] );
-&gt; 	}
-&gt; }</code></pre>
+    if ( spam[i].group === 'easy-ham-1' || spam[i].group === 'spam-2' ) {
+        training.push( spam[i] );
+    }
+}</code></pre>
+			<p>
+				When you looked at some of the emails, you will have noticed that these always include meta-information of the emails before the actual content. The following function helps us to strip off this part and also removes other unwanted character sequences from the emails:
+			</p>
+			<pre><code language="javascript">
+&gt; function extractBody( email ) {
+    // Remove the meta-information before two initial line breaks:
+    var LINE_BREAK_REGEXP = /[\r\n]{2}([\s\S]*)$/;
+    var text = email.match( LINE_BREAK_REGEXP )[ 1 ];
+    // Turn to lowercase such that a word is treated the same no matter its case:
+    text = lowercase( text );
+    // Expand contractions, e.g. don't => do not:
+    text = expandContractions( text );
+    text = removePunctuation( text );
+    // Remove numbers and other special characters:
+    text = text.replace( /[0-9\-\+]/g, '' );
+    // Remove common words such as "the" or "and":
+    text = removeWords( text, STOPWORDS );
+    return text;
+}</code></pre>
+			<p>
+				Before we are able to call this function, we need to load the list of stopwords that will be removed. Since our texts are in English, we will load a list of commonly used English words, but <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> comes with stopword lists for many other languages as well.
+			</p>
+			<pre><code language="javascript">
+&gt; var STOPWORDS = datasets( 'STOPWORDS_EN' ); </code></pre>
+			<aside class="special">
+				<p>
+					Very common words that do not carry significant informational value are often removed when building a bag-of-words representation. These are referred to as <i>stop words</i>. This practice was more common in the past, where memory considerations played a larger role, but the results of quite a few statistical models also benefit from the removal of such common words.
+				</p>
+			</aside>
+			<p>
+				You should now be able to call <code>extractBody()</code> on any of the spam texts. For example, try <code>extractBody( spam[ 0 ].text )</code> to look at the transformed text for the first mail. A large part of building a statistical model is the selection of variables that are useful in predicting the outcome of interest. In our case, we will just use the words appearing in the texts, but observe that we may throw away useful information by doing so. For example, we might speculate that spam mails contain more capitalized or uppercased words in order to grab the attention of the recipients.
+			</p>
+			<p>
+				Our <i>Naive Bayes</i> model relies on a so-called <i>bag-of-words</i> representation of the documents in our data set. To generate this representation, we will tokenize our texts, i.e. split them up into pieces (the so called <i>tokens</i>).
+			</p>
+			<aside class="special">
+				<p>
+					In natural language processing, a bag-of-words model is a simplifying representation of a text document, which disregards word order and grammer, only keeping count of how often a word appears in the respective document.
+				</p>
+			</aside>
+			<p>
+				We can use the <code>tokenize</code> function for this task. With these functions equipped, let us now extract the tokens for the texts in our training set, using <code>inmap()</code> to perform an in-place map operation.
+			</p>
+			<pre><code language="javascript">
+&gt; training = inmap( training, function( x ) {
+    x.body = getBody( x.text );
+    x.tokens = tokenize( x.body );
+    return x;
+});</code></pre>
+			<p>
+				Next, let us explore the frequency differences for the different tokens in both the spam and non-spam groups. We can use the <code>groupBy</code> function to group our training data into these two groups as follows:
+			</p>
+			<pre><code language="javascript">
+&gt; var grouped = groupBy( training, function( x ) {
+    if ( x.group === 'spam-2' ) {
+        return 'spam';
+    }
+    return 'nospam';
+});</code></pre>
+			<p>
+				We can now lump all tokens from texts belonging to either group together, for example by using the following code:
+			<p>
+			<pre><code language="javascript">
+&gt; var spamTokens = flattenArray( pluck( grouped.spam, 'tokens' ) );
+&gt; var nospamTokens = flattenArray( pluck( grouped.nospam, 'tokens' ) );</code></pre>
+			<p>
+				Let us use the <code>countBy</code> function to calculate the frequencies. Notice that we supply the <code>identity</code> function as the second argument since we want to group the array elements by their actual values.
+			</p>
+			<pre><code language="javascript">
+&gt; var spamFreqs = countBy( spamTokens, identity );
+&gt; var nospamFreqs = countBy( nospamTokens, identity );</code></pre>
+			<p>
+				With this convenient representation in hand, we can explore the <i>absolute frequencies</i> of the tokens in the two groups. Think of a few words that you would expect to show up much more Frequently in spam mails, and check whether the frequencies support this hypothesis.
+			</p>
+			<p>
+				However, notice that the absolute frequencies might be misleading since the groups are not equally represented in our training set, with <code>spam-2</code> containing <code>1396</code> and <code>easy-ham-1</code> containing <code>2500</code> observations. Hence, it makes more sense to look at <i>relative frequencies</i>, which take the different group sizes into account. For future reference, let us first store the relative group frequencies in an <code>object</code>:
+			</p>
+				<pre><code language="javascript">
+&gt; var groupProbs = {
+    'spam': 1396 / ( 1396 + 2500 ),
+    'nospam': 2500 / ( 1396 + 2500 )
+};</code></pre>
+			<p>
+				To turn the token counts into relative frequencies, we have to divide them by the total number of tokens in the respective group. Let us define two functions for this purpose:
+			</p>
+			<pre><code language="javascript">
+&gt; function wordSpamProb( word ) {
+    return spamFreqs[ word ] / spamTokens.length;
+}
+&gt; function wordNospamProb( word ) {
+    return nospamFreqs[ word ] / nospamTokens.length;
+}</code></pre>
+			<p>
+				Invoke the functions for the words you have looked at before. Now think about what would happen if we were to call either function for a word that did not occur in the respective group?
+			</p>
+			<p>
+				For our classifier to work for documents which contain words unknown to our corpus, we will have to change the b
+			</p>
+			<aside class="special">
+				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
+				<p>
+
+				</p>
+			</aside>
+			<p>
+
+			</p>
+			<p>
+
+
+			</p>
+			<pre><code language="javascript">
+&gt; function wordSpamProb( word ) {
+    var nk = spamFreqs[ word ] || 0;
+    return ( nk + 1 ) / ( spamTokens.length + vocabSize );
+}
+&gt; function wordNospamProb( word ) {
+    var nk = nospamFreqs[ word ] || 0;
+    return ( nk + 1 ) / ( nospamTokens.length + vocabSize );
+}</code></pre>
+			<p>
+
+			</p>
+			<aside class="special">
+				<h3>Laplace Smoothing (add-1)</h3>
+				<p>
+
+				</p>
+			</aside>
+			<p>
+
+			</p>
+			<p>Our workhorse function to classify new emails can now be implemented in a relatively straightforward manner:</p>
+			<pre><code language="javascript">
+&gt; function classifyEmail( text ) {
+    var body = getBody( text );
+    var tokens = tokenize( body );
+    var spamScore = base.ln( classProbs[ "spam" ] );
+    for ( let i = 0; i < tokens.length; i++ ) {
+        spamScore += base.ln( wordSpamProb( tokens[i] ) );
+    }
+    var nospamScore = base.ln( classProbs[ "nospam" ] );
+    for ( let i = 0; i < tokens.length; i++ ) {
+        nospamScore += base.ln( wordNospamProb( tokens[i] ) );
+    }
+    return spamScore > nospamScore ? 'spam' : 'nospam';
+}</code></pre>
+			<p>
+				Test the function out on a few of the emails from <code>spam</code>. Do we make the correct predictions?
+			</p>
 
 			<h3>Exercises</h3>
 			<ul>
-				<li>First</li>
-				<li>Second</li>
+				<li>Let us assess the performance of our model by creating a table of the percentages of emails that are correctly classified in each of the groups (from both the training and test sets). What do you observe?</li>
+				<li>Can you think of some other features besides the words that could discriminate between the classes? Think about stuff like the number of capitalized words or $ signs. Check whether your assumption is correct and there is a difference in their frequency among the spam and non-spam mails. The process of identifying and creating new variables that are predtictive of the outcome is often called <i>feature engineering</i>. Notice that the <i>Naive Bayes</i> classifier is not restricted to words, but could use all these other features as well!</li>
 			</ul>
 
 			<h3>Survey</h3>
