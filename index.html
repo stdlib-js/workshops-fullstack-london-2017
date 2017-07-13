@@ -253,10 +253,17 @@
 			</p>
 			<pre><code language="javascript">
 &gt; TODO</code></pre>
-
 			<h3>Help</h3>
 			<p>
-				One of the key features of <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> is the inclusion of REPL help documentation, which is accessed via the <code>help()</code> command. For example, to access the help documentation for <code>base.erf</code>
+				One of the key features of <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> is the inclusion of REPL help documentation, which is accessed via the <code>help()</code> command.
+			</p>
+			<aside class="special">
+				<p>
+					In Firefox, the <code>help()</code> command is aliased as <code>_help()</code> due to a name conflict with one of Firefox's <a title="Firefox helper commands" href="https://developer.mozilla.org/en-US/docs/Tools/Web_Console/The_command_line_interpreter">helper commands</a>.
+				</p>
+			</aside>
+			<p>
+				For example, to access the help documentation for <code>base.erf</code>
 			</p>
 			<pre><code language="javascript">
 &gt; help( base.erf )</code></pre>
@@ -1153,7 +1160,7 @@
 			'use strict';
 
 			/**
-			* Render a TeX equation.
+			* Renders a TeX equation.
 			*
 			* @private
 			* @param {DOMElement} el - element to render
