@@ -966,7 +966,7 @@
 			<aside class="special">
 				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
 				<p>
-					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> let's us then switch the conditioning and calculate the class probabilities given the document:
+					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the document:
 					<div class="tex" data-eqn="P(c|d) = \frac{P(d|c) P(c)}{P(d)}" displayMode></div>
 				</p>
 			</aside>
@@ -990,7 +990,7 @@
 
 			</p>
 			<aside class="special">
-				<h3>Laplace Smoothing (add-1)</h3>
+				<h3>Laplace Smoothing</h3>
 				<p>
 					Estimating the word probabilities <span class="tex" data-eqn="P(w|c)"></span> by the empirical frequencies is problematic because it would mean that for any word not appearing in any of the documents of the respective class, we would estimate is as zero. However, this would imply that when classifying a new document containing a word not present in the documents of a given class, it would get assigned a probability of zero, even though it may otherwise might look a lot like the documents from said class. To deal with this issue, one could simply drop words that are unknown to the training corpus, but a better approach is <i>Laplace Smoothing</i>, in which a non-zero probability is assigned to every word beforehand. This is achieved by adding a value <span class="tex" data-eqn="\alpha"></span> to any count, so that the probability estimates change from
 				</p>
