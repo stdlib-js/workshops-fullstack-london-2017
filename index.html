@@ -797,8 +797,26 @@
 
 			<h3>Simulation Study</h3>
 			<p>
-
-
+				The decision whether a null hypothesis should be rejected can be made using the <a href="https://en.wikipedia.org/wiki/P-value">p-value</a> of the test. A smaller p-value indicates that the hypothesis we are considering may not well explain the data. As a decision rule, we reject the hypothesis whenever the p-value is lower than the chosen significance level <code>&alpha;</code>, which is by convention often set to <code>0.05</code>. Recall that <code>&alpha;</code> denotes the probability that you reject the null hypothesis even though it is true. By fixing it at <code>0.05</code>, we are basically saying that we are content with erroneously rejecting the null in 5% of the cases. Why is <code>&alpha;</code> equal to this error probability? It can be mathematically proven that if the null hypothesis is true, the p-value follows a uniform distribution on the interval <code>[0,1]</code>. Hence, we would expect 5% of p-values over many runs to be smaller than <code>0.05</code>. Instead of a mathematical proof, let us simulate some data to confirm that this is indeed the case.
+			</p>
+			<p>
+				We will consider the hypothesis that the true mean of a distribution from which we observe data is equal to zero. For this purpose, we may use the <code>ttest</code> function, which can perform a one-sample t-test. We will generate data from a normal distribution with zero mean and some known standard deviation <code>&sigma;</code>, like so:
+			</p>
+			<pre><code language="javascript">
+&gt; var arr = new Array( 300 );
+&gt; inmap( arr, function( x ) { base.random.normal( 0, sigma ); } );</code></pre>
+			<p>
+				We then run the t-test and extract the p-value. To be able to repeat this process many times, let us wrap it all inside a function:
+			</p>
+			<pre><code language="javascript">
+&gt; function getPValue( size, sigma ) {
+    var arr = new Array( size );
+    inmap( arr, function( x ) { base.random.normal( 0, sigma ); } );
+		var out = ttest( arr );
+		return out.pValue;
+}</code></pre>
+			<p>
+				Now create a sufficiently large array (at least a few hunded observations) and populate it with p-values generated from this function, say for <code>size = 100</code> and <code>sigma = 3</code>. Calculate the proportion of array elements that are smaller than <code>0.05</code>. Is it reasonably close to <code>0.05</code>, as we would expect?
 			</p>
 
 			<h3>Exercises</h3>
