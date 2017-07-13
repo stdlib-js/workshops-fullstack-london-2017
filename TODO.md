@@ -1,5 +1,10 @@
 # TODO
 
+* [ ] Move repo to stdlib.
+* [ ] Store survey responses
+* [ ] Anscombe's quartet
+
+
 ## Workshop Lessons
 
 1. Getting to know stdlib
