@@ -800,29 +800,34 @@
 				The decision whether a null hypothesis should be rejected can be made using the <a href="https://en.wikipedia.org/wiki/P-value">p-value</a> of the test. A smaller p-value indicates that the hypothesis we are considering may not well explain the data. As a decision rule, we reject the hypothesis whenever the p-value is lower than the chosen significance level <code>&alpha;</code>, which is by convention often set to <code>0.05</code>. Recall that <code>&alpha;</code> denotes the probability that you reject the null hypothesis even though it is true. By fixing it at <code>0.05</code>, we are basically saying that we are content with erroneously rejecting the null in 5% of the cases. Why is <code>&alpha;</code> equal to this error probability? It can be mathematically proven that if the null hypothesis is true, the p-value follows a uniform distribution on the interval <code>[0,1]</code>. Hence, we would expect 5% of p-values over many runs to be smaller than <code>0.05</code>. Instead of a mathematical proof, let us simulate some data to confirm that this is indeed the case.
 			</p>
 			<p>
-				We will consider the hypothesis that the true mean of a distribution from which we observe data is equal to zero. For this purpose, we may use the <code>ttest</code> function, which can perform a one-sample t-test. We will generate data from a normal distribution with zero mean and some known standard deviation <code>&sigma;</code>, like so:
+				We will consider the hypothesis that the true mean of a distribution from which we observe data is equal to zero. For this purpose, we may use the <code>ttest</code> function, which can perform a one-sample t-test. We will generate data from a normal distribution with zero mean and some known standard deviation <code>&sigma;</code> (e.g., <code>sigma = 3</code>), like so:
 			</p>
 			<pre><code language="javascript">
 &gt; var arr = new Array( 300 );
-&gt; inmap( arr, function( x ) { base.random.normal( 0, sigma ); } );</code></pre>
+&gt; inmap( arr, function( x ) { base.random.normal( 0.0, 3.0 ); } );</code></pre>
 			<p>
 				We then run the t-test and extract the p-value. To be able to repeat this process many times, let us wrap it all inside a function:
 			</p>
 			<pre><code language="javascript">
-&gt; function getPValue( size, sigma ) {
+&gt; function simulatePValue( size ) {
     var arr = new Array( size );
-    inmap( arr, function( x ) { base.random.normal( 0, sigma ); } );
-		var out = ttest( arr );
-		return out.pValue;
+    inmap( arr, function( x ) { return base.random.normal( 0.0, 3.0 ); } );
+    var out = ttest( arr );
+    return out.pValue;
 }</code></pre>
 			<p>
-				Now create a sufficiently large array (at least a few hunded observations) and populate it with p-values generated from this function, say for <code>size = 100</code> and <code>sigma = 3</code>. Calculate the proportion of array elements that are smaller than <code>0.05</code>. Is it reasonably close to <code>0.05</code>, as we would expect?
+				Now create a sufficiently large array (at least a few hunded observations) and populate it with p-values generated from this function, say for <code>size = 100</code>. Calculate the proportion of array elements that are smaller than <code>0.05</code>. Is this proportion reasonably close to <code>0.05</code>, as we would expect? You can repeat the whole process a few times to see how the results vary.
 			</p>
+			<p>
+				To formally test whether the generated p-values are drawn from a uniform distribution between zero and one, we can use the <a href="https://en.wikipedia.org/wiki/Kolmogorov–Smirnov_test">Kolmogorov-Smirnov test</a>, a test which can be used more generally whenever one wants to test a sample against a continuous reference distribution. In <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a>, the <a href="https://en.wikipedia.org/wiki/Kolmogorov–Smirnov_test">Kolmogorov-Smirnov test</a> is implemented in the <code>kstest</code> function. Make yourself familiar with its API and use it to assess our claim (Hint: the examples demonstrate how to test against a Uniform(0,1) distribution).
+			</p>
+			<p>The t-test is based on the assumption that the data are drawn from a normal distribution. If this assumption is violated, its results may not be trusted under certain circumstances. We will explore this issue a more in the exercises.</p>
 
 			<h3>Exercises</h3>
 			<ul>
-				<li>TODO: First</li>
-				<li>TODO: Second</li>
+				<li>Write a new <code>simulatePValue</code> function for using the t-test when the data is generated from a <code>Gamma(1,2)</code> distribution. Instead of testing against a mean of zero, use the <code>mu</code> option of <code>ttest</code> to test against the correct mean. Repeat this for different values of <code>size</code> and verify that the <code>ttest</code> breaks down when one has a skewed distribution such as the <code>Gamma(1,2)</code> and only small sample sizes.</li>
+				<li>Instead of using the <i>p-value</i> to conduct one's tests, one can alternatively look at a confidence interval for the parameter of interest. Confidence intervals are often used to convey uncertainty in model estimates, since they are useful even when one does not have a concrete hypothesis one wishes to test. For a </code>1-alpha</code> confidence interval, one has the guarantee that for a large number of such confidence intervals, </code>1-alpha</code> of them will contain the true parameter. Verify this behavior by repeatedly simulating data from a normal distribution with zero mean, extracting the confidence intervals from a <code>ttest</code> and showing that they contain zero around </code>1-alpha</code> of the cases. Notice that while in reality we are not going to repeat a specific test multiple times, we will likely conduct many different tests over a long time period. If we conduct them all at a significance level </code>alpha</code>, we can be certain that </code>1-alpha</code> of the them contain the true value (provided there are no violations of test assumptions).
+				</li>
 			</ul>
 
 			<h3>Survey</h3>
