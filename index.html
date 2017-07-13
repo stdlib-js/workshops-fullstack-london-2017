@@ -666,7 +666,107 @@
 
 		<google-codelab-step label="Statistical Distributions" duration="15">
 			<p>
-				TODO
+				A <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> is a description of the relative frequency in which each possible outcome will occur in an <strong>experiment</strong>. For example, if a random variable <code>X</code> denotes the outcome of a coin toss (the experiment), then the <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> of <code>X</code> is <code>0.5</code> that <code>X</code> is heads and <code>0.5</code> that <code>X</code> is tails (assuming a <i>fair</i> coin; i.e., a coin in which both sides are equally probable).
+			</p>
+			<p>
+				The study of <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distributions</a> is important because <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distributions</a> allow us to concisely <a title="Statistical model" href="https://en.wikipedia.org/wiki/Statistical_model">model</a> data in mathematical terms. Once modeled, we are able to generate hypotheses, conduct statistical tests to test those hypotheses, and perform <a title="Statistical inference" href="https://en.wikipedia.org/wiki/Statistical_inference">statistical inference</a>.
+			</p>
+			<aside class="special">
+				<p>
+					<a title="Statistical inference" href="https://en.wikipedia.org/wiki/Statistical_inference">Statistical inference</a> is the process of analyzing data to deduce properties (e.g., how many times we should expect to observe a particular outcome) of the data's underlying data generating process (e.g., the act of tossing a coin). The inferred properties allow us to make statements, including predictions, regarding a <i>population</i> of which the data is assumed to be a subset. For example, if we assume that heights of males in the UK follows a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a>  (i.e., a bell-shaped curve) having mean <code>&mu;</code> and standard deviation <code>&sigma;</code>, we can compute the likelihood of observing a male who is 2 meters tall, even if the data serving as the basis of our model does not contain an observation having the same value.
+				</p>
+			</aside>
+			<p>
+				In the previous lab, we generated <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normally distributed</a> data. In this lab, we will continue to explore this and other distributions.
+			</p>
+
+			<h3>Normal Distribution</h3>
+
+			<p>
+				One of the most commonly used distributions for modeling data is the <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a>. To help us better understand its properties, let us begin by generating pseudorandom numbers drawn from a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> with a known mean and standard deviation.
+			</p>
+			<pre><code language="javascript">
+&gt; var N = 100; // number of observations
+&gt; var y = new Float64Array( N );
+&gt; inmap( y, function () { return base.random.normal( 0.0, 1.0 ); } );</code></pre>
+			<p>
+				To see the shape of our data, we can construct a <a title="Histogram" href="https://en.wikipedia.org/wiki/Histogram">histogram</a>, in which we "bin" each observation and count the number of observations for each bin.
+			</p>
+			<aside class="special">
+				<p>
+					<i>Binning</i> refers to dividing a value range into a series of intervals and determining in which interval an observation falls.
+				</p>
+			</aside>
+			<p>
+				In order to place our data in bins having a width of <code>0.1</code>, we can first use the function <code>base.roundn()</code> to round each observation to a specified number of decimal places. For bin widths of <code>0.1</code>, we want to round to the first decimal.
+			</p>
+			<pre><code language="javascript">
+&gt; inmap( y, function ( y ) { return base.roundn( y, -1 ); } );</code></pre>
+			<p>
+				Next, we can compute the number of observations for each bin by using the <code>countBy</code> function with the <code>identity()</code> function as the <i>indicator</i>.
+			</p>
+			<pre><code language="javascript">
+&gt; var counts = countBy( y, identity );</code></pre>
+			<p>
+				In order to plot the data, we need to construct an <code>x</code> vector covering the expected bin domain.
+			</p>
+			<pre><code language="javascript">
+&gt; var x = [];
+&gt; function predicate() { return x[ x.length-1 ] !== 5.0; };
+&gt; function fcn( i ) {
+    var v = -5.0 + (0.1*i);
+    x.push( base.roundn( v, -1 ) );
+};
+&gt; whilst( predicate, fcn );</code></pre>
+			<p>
+				Next, we need to create a <code>y</code> vector having the same length as <code>x</code>, but which includes the bin counts.
+			</p>
+			<pre><code language="javascript">
+&gt; y = new Float64Array( x.length );
+&gt; function key2idx( k ) { return indexOf( x, parseFloat( k ) ); };
+&gt; forOwn( counts, function ( v, k ) { y[ key2idx( k ) ] = v; } );</code></pre>
+			<aside class="special">
+				<p>
+					More performant methods exist for computing a <a title="Histogram" href="https://en.wikipedia.org/wiki/Histogram">histogram</a>. Implementing these methods is left as an exercise for the reader.
+				</p>
+			</aside>
+			<p>
+				To plot the data, we proceed as we did in the previous lab.
+			</p>
+			<pre><code language="javascript">
+&gt; var plt = plot( [x], [y] );
+&gt; plt.xLabel = 'x';
+&gt; plt.yLabel = 'counts';
+&gt; var el = document.querySelector( '#histogram-normal-1' );
+&gt; el.innerHTML = vdom2html( plt.render() );</code></pre>
+			<figure id="histogram-normal-1" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #histogram-normal-1: A histogram of numbers drawn from a normal distribution.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="A histogram of numbers drawn from a normal distribution" src="img/histogram_normal_1.png" style="max-width: 600px;">
+				<figcaption>Figure E6: Expected plot.</figcaption>
+			</figure>
+			<p>
+				To see how well the empirical distribution matches the expected distribution, let us first generate the expected distribution using <code>base.dist.normal.pdf()</code>.
+			</p>
+			<pre><code language="javascript">
+&gt; var expected = new Float64Array( x.length );
+&gt; forEach( x, function ( v, i ) {
+    v = base.dist.normal.pdf( v, 0.0, 1.0 );
+    expected[ i ] = v;
+});</code></pre>
+			<p>
+				Recall that the <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> describes the relative <i>frequency</i> in which each possible outcome will occur in an <strong>experiment</strong>. To convert our empirical distribution from counts to frequencies, we need to normalize our data by dividing by the total number of observations.
+			</p>
+			<pre><code language="javascript">
+&gt; inmap( y, function ( v ) { return v / N; } );
+			</code></pre>
+			<p>
+				We can now update the plot to show both the empirical and expected distributions.
 			</p>
 
 			<h3>Exercises</h3>

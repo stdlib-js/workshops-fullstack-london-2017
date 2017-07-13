@@ -1,9 +1,16 @@
 # TODO
 
-* [ ] Move repo to stdlib.
-* [ ] Store survey responses
-* [ ] Anscombe's quartet
-* [ ] re-alias `help`
+1. Move repo to stdlib.
+
+2. Store survey responses
+
+   - Use Google sheet API?
+
+3. Anscombe's quartet dataset
+
+   - Add as part of the plotting lab?
+
+4. plot REPL help text!!!
 
 
 ## Workshop Lessons
