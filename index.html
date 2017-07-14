@@ -995,14 +995,14 @@ base.dist.exponential.pdf()</code></pre>
 			</p>
 			<pre><code language="javascript">
 &gt; var arr = new Array( 300 );
-&gt; inmap( arr, function() { return base.random.normal( 0.0, 3.0 ); } );</code></pre>
+&gt; inmap( arr, function () { return base.random.normal( 0.0, 3.0 ); } );</code></pre>
 			<p>
 				We then run the <a title="Student's t-test" href="https://en.wikipedia.org/wiki/Student%27s_t-test">t-test</a> and extract the p-value. To be able to repeat this process many times, let us wrap everything inside a function:
 			</p>
 			<pre><code language="javascript">
 &gt; function simulate( size ) {
     var arr = new Array( size );
-    inmap( arr, function( x ) { return base.random.normal( 0.0, 3.0 ); } );
+    inmap( arr, function () { return base.random.normal( 0.0, 3.0 ); } );
     var out = ttest( arr );
     return out.pValue;
 }</code></pre>
