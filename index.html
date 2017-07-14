@@ -1110,7 +1110,7 @@ base.random.gamma()</code></pre>
 			</p>
 			<pre><code language="javascript">
 &gt; var training = []
-&gt; for ( var i = 0; i < spam.length; i++ ) {
+&gt; for ( var i = 0; i &lt; spam.length; i++ ) {
     if ( spam[i].group === 'easy-ham-1' || spam[i].group === 'spam-2' ) {
         training.push( spam[i] );
     }
@@ -1364,7 +1364,7 @@ base.random.gamma()</code></pre>
 				These bumps are then summed together to obtain the KDE, displayed in above plot as the solid blue line. In regions with many data points, the KDE will thus return large values since many bumps were summed together, whereas the KDE will return smaller values for regions with only few observations.
 			</p>
 			<p>
-				Choosing an appropriate bandwidth is a delicate problem. Many solutions have been proposed, but there is no clear best one. For the sake of simplicity, we will employ a rule of thumb by Silverman that is often used in practice. For above data se, the rule chooses the value <span class="tex" data-eqn="h = 1.55054"></span>. Let us store this in a variable of said name:
+				Choosing an appropriate bandwidth is a delicate problem. Many solutions have been proposed, but there is no clear best one. For the sake of simplicity, we will employ a rule of thumb by Silverman that is often used in practice. For the data set above, the rule chooses the value <span class="tex" data-eqn="h = 1.55054"></span>. Let us store this in a variable of said name:
 			</p>
 			<pre><code language="javascript">
 &gt; var h = 1.55054;</code></pre>
