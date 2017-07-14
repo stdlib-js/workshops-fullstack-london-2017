@@ -252,7 +252,7 @@
 				To list library functionality, enter
 			</p>
 			<pre><code language="javascript">
-&gt; TODO</code></pre>
+&gt; namespace()</code></pre>
 			<h3>Help</h3>
 			<p>
 				One of the key features of <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a> is the inclusion of REPL help documentation, which is accessed via the <code>help()</code> command.
@@ -433,8 +433,8 @@
 			<pre><code language="javascript">
 &gt; var x = new Float64Array( 100 );
 &gt; var y = new Float64Array( 100 );
-&gt; inmap( x, function () { return base.random.randn(); } );
-&gt; inmap( y, function () { return base.random.randn(); } );</code></pre>
+&gt; inmap( x, base.random.randn );
+&gt; inmap( y, base.random.randn );</code></pre>
 			<p>
 				And, as before, we will create a new plot using the <code>plot()</code> function.
 			</p>
@@ -477,7 +477,7 @@
 				<figcaption>Figure E2: Expected plot.</figcaption>
 			</figure>
 			<p>
-				For our next plot, let us try plotting multiple lines. Instead of a single <code>x</code> and <code>y</code>, we will want to generate multiple datasets. Similar to before, we can generate <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normally distributed</a> pseudorandom data, but this time we will use <code>base.random.normal</code> to draw pseudorandom numbers from a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> with mean <code>&mu;</code> and standard deviation <code>&sigma;</code>.
+				For our next plot, let us try plotting multiple lines. Instead of a single <code>x</code> and <code>y</code>, we will want to generate multiple datasets. Similar to before, we can generate <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normally distributed</a> pseudorandom data, but this time we will use <code>base.random.normal()</code> to draw pseudorandom numbers from a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> with mean <code>&mu;</code> and standard deviation <code>&sigma;</code>.
 			</p>
 			<pre><code language="javascript">
 &gt; var x = new Int8Array( 100 );
@@ -666,13 +666,201 @@
 
 		<google-codelab-step label="Statistical Distributions" duration="15">
 			<p>
-				TODO
+				A <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> is a description of the relative frequency in which each possible outcome will occur in an <strong>experiment</strong>. For example, if a random variable <code>X</code> denotes the outcome of a coin toss (the experiment), then the <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> of <code>X</code> is <code>0.5</code> that <code>X</code> is heads and <code>0.5</code> that <code>X</code> is tails (assuming a <i>fair</i> coin; i.e., a coin in which both sides are equally probable).
 			</p>
+			<p>
+				The study of <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distributions</a> is important because <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distributions</a> allow us to concisely <a title="Statistical model" href="https://en.wikipedia.org/wiki/Statistical_model">model</a> data in mathematical terms. Once modeled, we are able to generate hypotheses, conduct statistical tests to test those hypotheses, and perform <a title="Statistical inference" href="https://en.wikipedia.org/wiki/Statistical_inference">statistical inference</a>.
+			</p>
+			<aside class="special">
+				<p>
+					<a title="Statistical inference" href="https://en.wikipedia.org/wiki/Statistical_inference">Statistical inference</a> is the process of analyzing data to deduce properties (e.g., how many times we should expect to observe a particular outcome) of the data's underlying data generating process (e.g., the act of tossing a coin). The inferred properties allow us to make statements, including predictions, regarding a <i>population</i> of which the data is assumed to be a subset. For example, if we assume that heights of males in the UK follows a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a>  (i.e., a bell-shaped curve) having mean <code>&mu;</code> and standard deviation <code>&sigma;</code>, we can compute the likelihood of observing a male who is 2 meters tall, even if the data serving as the basis of our model does not contain an observation having the same value.
+				</p>
+			</aside>
+			<p>
+				In the previous lab, we generated <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normally distributed</a> data. In this lab, we will continue to explore this and other distributions.
+			</p>
+
+			<h3>Histograms</h3>
+
+			<p>
+				One of the most commonly used distributions for modeling data is the <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a>. To help us better understand its properties, let us begin by generating pseudorandom numbers drawn from a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> with a known mean and standard deviation.
+			</p>
+			<pre><code language="javascript">
+&gt; var N = 100; // number of observations
+&gt; var data = new Float64Array( N );
+&gt; inmap( data, function () { return base.random.normal( 0.0, 1.0 ); } );</code></pre>
+			<p>
+				To see the shape of our data, we can construct a <a title="Histogram" href="https://en.wikipedia.org/wiki/Histogram">histogram</a>, in which we "bin" each observation and count the number of observations for each bin.
+			</p>
+			<aside class="special">
+				<p>
+					<i>Binning</i> refers to dividing a value range into a series of intervals and determining in which interval an observation falls.
+				</p>
+			</aside>
+			<p>
+				In order to place our data in bins having a width of <code>0.1</code>, we can first use the function <code>base.roundn()</code> to round each observation to a specified number of decimal places. For bin widths of <code>0.1</code>, we want to round to the first decimal.
+			</p>
+			<pre><code language="javascript">
+&gt; inmap( data, function ( d ) { return base.roundn( d, -1 ); } );</code></pre>
+			<p>
+				Currently, the data array is unordered, and, if ordered, would probably contain "gaps", in which a bin (i.e., rounded value) does not have any observations and thus is not present in the array. To transform our data array into a dense representation, we can proceed as follows. First, we define the expected bin domain.
+			</p>
+			<pre><code language="javascript">
+&gt; var bmin = -5.0;
+&gt; var bmax = 5.0;</code></pre>
+			<p>
+				where <code>bmin</code> and <code>bmax</code> represent the leftmost bin location (center) and the rightmost bin location (center), respectively. Now that we have defined our bin domain, we can compute the number of bins as follows:
+			</p>
+			<pre><code language="javascript">
+&gt; var bwidth = 0.1;
+&gt; var nbins = ((bmax-bmin) / bwidth) + 1;</code></pre>
+			<p>
+				You can convince yourself of the bin formula by considering the bin vector: {0, 1, 2, 3}, where <code>0</code> and <code>3</code> are the leftmost and rightmost bin centers, respectively. If we apply the formula above, we recover the vector length, as expected.
+			</p>
+			<p>
+				Now that we have the number of bins, we can initialize a vector which will contain the bin counts for each bin in the expected domain.
+			</p>
+			<pre><code language="javascript">
+&gt; var counts = new Int32Array( nbins );</code></pre>
+			<p>
+				Next, when determining bin counts, we need to define a method which allows us to efficiently determine a value's bin index. By this we mean, if given the observation <code>-0.1</code>, what is the array index in the <code>counts</code> vector for the bin whose count we want to update? Building on the formula above for <code>nbins</code>, we can define the following function:
+			</p>
+			<pre><code language="javascript">
+&gt; function bidx( bmin, bwidth, v ) { return base.round( base.abs(bmin-v) / bwidth ); };</code></pre>
+			<aside class="special">
+				<p>
+					Why does the index formula use <code>base.round()</code>? Try implementing the index formula without rounding and provide <code>v = -2.1</code>.
+				</p>
+			</aside>
+			<p>
+				To convince yourself of the index formula, consider the edge cases <code>-5.0</code> and <code>5.0</code>. If <code>v = -5.0</code>, the computed index is <code>0</code>, which corresponds to the leftmost bin. If <code>v = 5.0</code>, the computed index is <code>100</code>, which corresponds to the rightmost bin. As an exercise, compute the indexes for <code>-4.8</code> and <code>4.8</code> and confirm that the returned index is correct.
+			</p>
+			<aside class="special">
+				<p>
+					The index formula does <strong>not</strong> address data values which are outside the expected domain. How should we handle these values?
+				</p>
+			</aside>
+			<p>
+				Now that we have a means for computing a bin index, we can populate our <code>counts</code> vector by iterating over our <code>data</code> array and updating the corresponding count.
+			</p>
+			<pre><code language="javascript">
+&gt; var idx, i;
+&gt; for ( i = 0; i &lt; data.length; i++ ) {
+    idx = bidx( bmin, bwidth, data[ i ] );
+    counts[ idx ] += 1;
+};</code></pre>
+			<p>
+				In order to plot the data, we need to construct a bin vector, which will be plotted along the x-axis, covering the expected bin domain; i.e., -5.0, -4.9, ..., 4.9, 5.0.
+			</p>
+			<pre><code language="javascript">
+&gt; var bcenters = new Float64Array( nbins );
+&gt; var bc;
+&gt; for ( i = 0; i &lt; nbins; i++ ) {
+    bc = bmin + (bwidth*i);
+    bcenters[ i ] = base.roundn( bc, -1 );
+};</code></pre>
+			<p>
+				To plot the data, we proceed as we did in the previous lab.
+			</p>
+			<pre><code language="javascript">
+&gt; var plt1 = plot( [bcenters], [counts] );
+&gt; plt1.xLabel = 'x';
+&gt; plt1.yLabel = 'counts';
+&gt; var el = document.querySelector( '#histogram-normal-1' );
+&gt; el.innerHTML = vdom2html( plt1.render() );</code></pre>
+			<figure id="histogram-normal-1" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #histogram-normal-1: A histogram of numbers drawn from a normal distribution.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="A histogram of numbers drawn from a normal distribution" src="img/histogram_normal_1.png" style="max-width: 600px;">
+				<figcaption>Figure E6: Expected plot.</figcaption>
+			</figure>
+			<p>
+				To see how well the empirical distribution matches the expected distribution, let us first generate an (approximated) expected distribution using <code>base.dist.normal.pdf()</code>.
+			</p>
+			<pre><code language="javascript">
+&gt; var expected = new Float64Array( bcenters.length );
+&gt; forEach( bcenters, function ( x, i ) {
+    var density = base.dist.normal.pdf( x, 0.0, 1.0 );
+    expected[ i ] = N * bwidth * density;
+});</code></pre>
+			<aside class="special">
+				<p>
+					The conversion from a probability density to a probability is more involved than the <a title="Approximating a probability from a probability density" href="http://mathinsight.org/probability_density_function_idea">approximation</a> used here.
+				</p>
+			</aside>
+			<p>
+				We can now update the plot to show both the empirical and expected distributions.
+			</p>
+			<pre><code language="javascript">
+&gt; var plt2 = plot( [bcenters,bcenters], [counts,expected] );
+&gt; plt2.xLabel = 'x';
+&gt; plt2.yLabel = 'counts';
+&gt; var el = document.querySelector( '#histogram-normal-overlay-1' );
+&gt; el.innerHTML = vdom2html( plt2.render() );</code></pre>
+			<figure id="histogram-normal-overlay-1" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #histogram-normal-overlay-1: Empirical and expected distributions.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="Empirical and expected distributions" src="img/histogram_normal_overlay_1.png" style="max-width: 600px;">
+				<figcaption>Figure E7: Expected plot.</figcaption>
+			</figure>
+			<p>
+				How well do you think the empirical distribution resembles the expected distribution? How would you explain discrepancies between the empirical and expected distributions?
 
 			<h3>Exercises</h3>
 			<ul>
-				<li>First</li>
-				<li>Second</li>
+				<li>
+					<p>
+						Based on the approached outlined above, create a function for generating a histogram from an input data array. The function should have the following signature:
+					<p>
+					<pre><code language="javascript">
+hist( data, bmin, bmax, bwidth )</code></pre>
+					<p>
+						Test your function by plotting into the element <code>#histogram-exercise-1</code> provided below.
+					</p>
+					<figure id="histogram-exercise-1" align="center">
+						<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+						<figcaption>Figure #histogram-exercise-1: Plot for exercise 1.</figcaption>
+					</figure>
+				</li>
+				<li>
+					<p>Repeat the generation of the empirical and expected distribution, but increase the number of observations. Insert your plot into the element <code>#histogram-exercise-2</code> provided below.
+					</p>
+					<figure id="histogram-exercise-2" align="center">
+						<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+						<figcaption>Figure #histogram-exercise-2: Plot(s) for exercise 2.</figcaption>
+					</figure>
+				</li>
+				<li>
+					<p>
+						Investigate other distributions; e.g.,
+					</p>
+					<pre><code>
+base.random.beta()
+base.dist.beta.pdf()
+
+base.random.laplace()
+base.dist.laplace.pdf()
+
+base.random.exponential()
+base.dist.exponential.pdf()</code></pre>
+					<p>
+						Insert your plots into the element <code>#histogram-exercise-3</code> provided below.
+					</p>
+					<figure id="histogram-exercise-3" align="center">
+						<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+						<figcaption>Figure #histogram-exercise-3: Plot for exercise 3.</figcaption>
+					</figure>
+				</li>
 			</ul>
 
 			<h3>Survey</h3>
@@ -760,7 +948,7 @@
 				</p>
 			</aside>
 			<p>
-				While the the difference in means seems large, is the difference also statistically significant? Let us find out!
+				While the difference in means seems large, is the difference also statistically significant? Let us find out!
 			</p>
 			<aside class="special">
 				<p>
@@ -797,7 +985,7 @@
 
 			<h3>Simulation Study</h3>
 			<p>
-				The decision whether a null hypothesis should be rejected can be made using the <a href="https://en.wikipedia.org/wiki/P-value">p-value</a> of the test. A smaller p-value indicates that the hypothesis we are considering may not well explain the data. As a decision rule, we reject the hypothesis whenever the p-value is lower than the chosen significance level <code>&alpha;</code>, which is by convention often set to <code>0.05</code>. Recall that <code>&alpha;</code> denotes the probability that you reject the null hypothesis even though it is true. By fixing it at <code>0.05</code>, we are basically saying that we are content with erroneously rejecting the null in 5% of the cases. Why is <code>&alpha;</code> equal to this error probability? It can be mathematically proven that if the null hypothesis is true, the p-value follows a uniform distribution on the interval <code>[0,1]</code>. Hence, we would expect 5% of p-values over many runs to be smaller than <code>0.05</code>. Instead of a mathematical proof, let us simulate some data to confirm that this is indeed the case.
+				We can decide whether a null hypothesis should be rejected by using the <a href="https://en.wikipedia.org/wiki/P-value">p-value</a> of a statistical test. A smaller p-value indicates that the hypothesis we are considering may not well explain the data. As a decision rule, we reject the hypothesis whenever the p-value is lower than the chosen significance level <code>&alpha;</code>, which is by convention often set to <code>0.05</code>. Recall that <code>&alpha;</code> denotes the probability that you reject the null hypothesis even though it is true. By fixing it at <code>0.05</code>, we are basically saying that we are content with erroneously rejecting the null in 5% of the cases. Why is <code>&alpha;</code> equal to this error probability? It can be mathematically proven that if the null hypothesis is true, the p-value follows a uniform distribution on the interval <code>[0,1]</code>. Hence, we would expect 5% of p-values over many runs to be smaller than <code>0.05</code>. Instead of a mathematical proof, let us simulate some data to confirm that this is indeed the case.
 			</p>
 			<p>
 				We will consider the hypothesis that the true mean of a distribution from which we observe data is equal to zero. For this purpose, we may use the <code>ttest</code> function, which can perform a one-sample t-test. We will generate data from a normal distribution with zero mean and some known standard deviation <code>&sigma;</code> (e.g., <code>sigma = 3</code>), like so:
