@@ -1249,11 +1249,11 @@ base.random.gamma()</code></pre>
 &gt; function classifyEmail( text ) {
     var body = getBody( text );
     var tokens = tokenize( body );
-    var spamScore = base.ln( classProbs[ "spam" ] );
+    var spamScore = base.ln( groupProbs[ "spam" ] );
     for ( let i = 0; i &lt; tokens.length; i++ ) {
         spamScore += base.ln( wordSpamProb( tokens[i] ) );
     }
-    var nospamScore = base.ln( classProbs[ "nospam" ] );
+    var nospamScore = base.ln( groupProbs[ "nospam" ] );
     for ( let i = 0; i &lt; tokens.length; i++ ) {
         nospamScore += base.ln( wordNospamProb( tokens[i] ) );
     }
