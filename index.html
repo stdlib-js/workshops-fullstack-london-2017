@@ -433,8 +433,8 @@
 			<pre><code language="javascript">
 &gt; var x = new Float64Array( 100 );
 &gt; var y = new Float64Array( 100 );
-&gt; inmap( x, function () { return base.random.randn(); } );
-&gt; inmap( y, function () { return base.random.randn(); } );</code></pre>
+&gt; inmap( x, base.random.randn );
+&gt; inmap( y, base.random.randn );</code></pre>
 			<p>
 				And, as before, we will create a new plot using the <code>plot()</code> function.
 			</p>
