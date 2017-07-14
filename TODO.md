@@ -1,7 +1,5 @@
 # TODO
 
-1. Move repo to stdlib.
-
 2. Store survey responses
 
    - Use Google sheet API?

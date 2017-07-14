@@ -1563,7 +1563,7 @@ base.random.gamma()</code></pre>
 	<!-- Scripts -->
 	<script type="text/javascript" src="js/bundle.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.js" integrity="sha384-/y1Nn9+QQAipbNQWU65krzJralCnuOasHncUFXGkdwntGeSvQicrYkiUBwsgUqc1" crossorigin="anonymous"></script>
-	<script>
+	<script type="text/javascript">
 		(function() {
 			'use strict';
 
@@ -1600,6 +1600,44 @@ base.random.gamma()</code></pre>
 			} // end FUNCTION onLoad()
 
 			window.onload = onLoad;
+		})();
+	</script>
+	<script type="text/javascript">
+		(function() {
+			'use strict';
+
+			var URL = 'https://script.google.com/macros/s/AKfycbzWMQ-I34MrI4HePla1aoU4nLTZGD8rlTHT2GwFaPYFAXGxHPc/exec';
+
+			window.addEventListener( 'google-codelab-survey-answer', onSurvey );
+
+			function onSurvey( evt ) {
+				var xhttp;
+				var blob;
+				var id;
+
+				id = evt.srcElement.attributes[ 0 ].value;
+
+				blob = {};
+				blob.parameters = [
+					id,
+					evt.detail.question,
+					evt.detail.answer
+				];
+				blob = 'id='+id;
+				blob += '&question='+evt.detail.question;
+				blob += '&answer='+evt.detail.answer;
+
+				xhttp = new XMLHttpRequest(); // TODO: account for older IE browsers
+				xhttp.onreadystatechange = onReady;
+				xhttp.open( 'POST', URL, true );
+				xhttp.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
+				xhttp.send( blob );
+			}
+
+			function onReady() {
+				// No-op...
+			}
+
 		})();
 	</script>
 
