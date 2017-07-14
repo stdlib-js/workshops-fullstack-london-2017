@@ -1130,6 +1130,18 @@ base.dist.exponential.pdf()</code></pre>
     x.tokens = tokenize( x.body );
     return x;
 });</code></pre>
+			<aside class="special">
+				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
+				<p>
+					Naive Bayes is a classification algorithm that allows us to estimate the conditional probability that an observation belongs to a certain class given a set of features <b>x</b>. When used for modeling text documents, their words are usually used as features, but this is by no means a requirement. The model derives its name from the use of <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> and the fact that is based on the "naive" assumption that the presence of any feature does not influence the probabilities of observing any other feature, i.e. the probability of observing an observation's features given class <i>c</i>, <span class="tex" data-eqn="P(\mathbf{x}|c)" ></span>, can be factorized as the product over all the individual feature probabilities. In our case, we may write this as <span class="tex" data-eqn="P(\mathbf{x}|c) = \prod_w P(w|c)" ></span>, where the product is taken over all words in the respective document.
+					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the observed features:
+				</p>
+					<div class="tex" data-eqn="P(c|\mathbf{x}) = \frac{P(\mathbf{x}|c) P(c)}{P(\mathbf{x})}"
+					displayMode></div>
+				<p>
+					Our decision rule of whether an email should be classified as spam is then quite simple: We can drop the denominator and calculate <span class="tex" data-eqn="P(\mathbf{x}|c) P(c) =  \prod_w P(w|c) P(c)"></span> for each class, assigning the observation to the class for which the conditional probability is larger. How do we obtain these probabilities? We estimate them by their empirical frequencies: We replace <span class="tex" data-eqn="P(c)"></span> by the percentage of documents from the respective class in our data corpus, and <span class="tex" data-eqn="P(w|c)"></span> by its relative frequency, i.e. the number of times the word appeared in documents of class <i>c</i> divided by the overall number of tokens in that class.
+				</p>
+			</aside>
 			<p>
 				Before building our model, let us explore the frequency differences for the tokens in both the spam and non-spam groups and find which ones help in discriminating between the two classes. For this purspose, we will divide our training data into two parts, and then lump the tokens from all their documents together into a single array, which we can then count to obtain the frequencies of the tokens in each group. We can use the <code>groupBy</code> function to group our training data into the two groups as follows:
 			</p>
@@ -1160,7 +1172,7 @@ base.dist.exponential.pdf()</code></pre>
 			<p>
 				However, notice that the absolute frequencies might be misleading since the groups are not equally represented in our training set, with <code>spam-2</code> containing <code>1396</code> and <code>easy-ham-1</code> containing <code>2500</code> observations. Hence, it makes more sense to look at <i>relative frequencies</i>, which take the different group sizes into account. For future reference, let us first store the relative group frequencies in an <code>object</code>:
 			</p>
-				<pre><code language="javascript">
+			<pre><code language="javascript">
 &gt; var groupProbs = {
     'spam': 1396 / ( 1396 + 2500 ),
     'nospam': 2500 / ( 1396 + 2500 )
@@ -1176,31 +1188,10 @@ base.dist.exponential.pdf()</code></pre>
     return nospamFreqs[ word ] / nospamTokens.length;
 }</code></pre>
 			<p>
-				Invoke the functions for the words you have looked at before. Now think about what would happen if we were to call either function for a word that did not occur in the respective group?
-			</p>
-			<p>
-				For our classifier to work for documents which contain words unknown to our corpus, we will have to change the b
-			</p>
-			<aside class="special">
-				<h3>Mathematical Formulation of the Naive Bayes Model</h3>
-				<p>
-					Naive Bayes is a classification algorithm that allows us to estimate the conditional probability that an observation belongs to a certain class given a set of features <b>x</b>. When used for modeling text documents, their words are usually used as features, but this is by no means a requirement. The model derives its name from the use of <a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> and the fact that is based on the "naive" assumption that the presence of any feature does not influence the probabilities of observing any other feature, i.e. the probability of observing an observation's features given class <i>c</i>, <span class="tex" data-eqn="P(\mathbf{x}|c)" ></span>, can be factorized as the product over all the individual feature probabilities. In our case, we may write this as <span class="tex" data-eqn="P(\mathbf{x}|c) = \prod_w P(w|c)" ></span>, where the product is taken over all words in the respective document.
-					<a href="https://en.wikipedia.org/wiki/Bayes%27_theorem">Bayes' Rule</a> lets us then switch the conditioning and calculate the class probabilities given the observed features:
-				</p>
-					<div class="tex" data-eqn="P(c|\mathbf{x}) = \frac{P(\mathbf{x}|c) P(c)}{P(\mathbf{x})}"
-					displayMode></div>
-				<p>
-					Our decision rule of whether an email should be classified as spam is then quite simple: We can drop the denominator and calculate <span class="tex" data-eqn="P(\mathbf{x}|c) P(c) =  \prod_w P(w|c) P(c)"></span> for each class, assigning the observation to the class for which the conditional probability is larger. How do we obtain these probabilities? We estimate them by their empirical frequencies: We replace <span class="tex" data-eqn="P(c)"></span> by the percentage of documents from the respective class in our data corpus, and <span class="tex" data-eqn="P(w|c)"></span> by its relative frequency, i.e. the number of times the word appeared in documents of class <i>c</i> divided by the overall number of tokens in that class.
-				</p>
-			</aside>
-			<p>
-
-			</p>
-			<p>
-
-
+				Invoke the functions for the words you have looked at before. Now think about what would happen if we were to call either function for a word that did not occur in the respective group? For our classifier to work for documents which contain words unknown to our corpus, we will have to change the way how we estimate the different word probabilities. We will make use of a technique called <i>Laplace Smoothing</i>, which in its simplest form just consists of adding a count of one to all words, even those which do not appear in documents of a given class. With the number of unique tokens in our training data set being equal to 76,709, we can adapt the functions as follows:
 			</p>
 			<pre><code language="javascript">
+&gt; var vocabSize = 76709;
 &gt; function wordSpamProb( word ) {
     var nk = spamFreqs[ word ] || 0;
     return ( nk + 1 ) / ( spamTokens.length + vocabSize );
@@ -1209,9 +1200,6 @@ base.dist.exponential.pdf()</code></pre>
     var nk = nospamFreqs[ word ] || 0;
     return ( nk + 1 ) / ( nospamTokens.length + vocabSize );
 }</code></pre>
-			<p>
-
-			</p>
 			<aside class="special">
 				<h3>Laplace Smoothing</h3>
 				<p>
@@ -1224,9 +1212,8 @@ base.dist.exponential.pdf()</code></pre>
 				where <span class="tex" data-eqn="count(w,c)"></span> is the number of times word <i>w</i> appears in the documents of class <i>c</i>, <span class="tex" data-eqn="N_c"></span> is its total number of tokens, and <span class="tex" data-eqn="|V|"></span> is the overall size of the vocabulary. Often, <span class="tex" data-eqn="\alpha"></span> is chosen to be one. <i>Laplace Smoothing</i> is preferable compared to simply discarding unknown tokens because these should decrease the probability of belonging to the respective class; they should just not turn it to zero.
 			</aside>
 			<p>
-
+				Our workhorse function to classify new emails can now be implemented in a relatively straightforward manner. Instead of directly evaluating <span class="tex" data-eqn="\prod_w P(w|c)"></span>, which is prone to underflow issues since many of the probabilities will be small, we will take the natural logarithm and calculate the sum <span class="tex" data-eqn="\sum_w \ln P(w|c)"></span> instead. Taking the logarithm is a monotonic transformation, which does not change the rank order of the untransformed values. Therefore, predictions made from the model are not affected by this choice.
 			</p>
-			<p>Our workhorse function to classify new emails can now be implemented in a relatively straightforward manner:</p>
 			<pre><code language="javascript">
 &gt; function classifyEmail( text ) {
     var body = getBody( text );
@@ -1253,6 +1240,178 @@ base.dist.exponential.pdf()</code></pre>
 
 			<h3>Survey</h3>
 			<google-codelab-survey survey-id="spam-classifier">
+				<h4>Did you find this lab useful?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Not useful</paper-radio-button>
+					<paper-radio-button>Somewhat useful</paper-radio-button>
+					<paper-radio-button>Useful</paper-radio-button>
+					<paper-radio-button>Very useful</paper-radio-button>
+				</paper-radio-group>
+
+				<h4>How do you feel about the length of this lab?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Too short</paper-radio-button>
+					<paper-radio-button>Just right</paper-radio-button>
+					<paper-radio-button>Too long</paper-radio-button>
+				</paper-radio-group>
+
+				<h4>Apart from the final exercises, how difficult did you find this lab?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Very Easy</paper-radio-button>
+					<paper-radio-button>Easy</paper-radio-button>
+					<paper-radio-button>Just Right</paper-radio-button>
+					<paper-radio-button>Difficult</paper-radio-button>
+					<paper-radio-button>Very Difficult</paper-radio-button>
+				</paper-radio-group>
+
+				<h4>How difficult did you find the exercises for this lab?</h4>
+				<paper-radio-group>
+					<paper-radio-button>Very Easy</paper-radio-button>
+					<paper-radio-button>Easy</paper-radio-button>
+					<paper-radio-button>Just Right</paper-radio-button>
+					<paper-radio-button>Difficult</paper-radio-button>
+					<paper-radio-button>Very Difficult</paper-radio-button>
+				</paper-radio-group>
+			</google-codelab-survey>
+
+		</google-codelab-step>
+
+		<!-- KDEs and Clustering -->
+
+		<google-codelab-step label="KDEs and Clustering" duration="20">
+			<h3>Kernel Density Estimation (KDE)</h3>
+			<p>
+				Over the course of this workshop, we got to know several known statistical distributions and how to work with them. Now imagine that you have some observations from an unknown distribution and would like to estimate the distribution they are coming from, for example as part of a machine learning algorithm. If you can make some distributional assumption, e.g. that the data are generated from a normal distribution, then the problem reduces to estimating the parameters of the distribution, which is usually done via the <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation">maximum likelihood</a> method.
+			</p>
+			<p>
+				As a running example, consider the case where we have data drawn from the following distribution:
+			</p>
+			<figure id="bimodal" align="center">
+				<img alt="Density of a bimodal distribution" src="img/bimodal.png" style="max-width: 600px;">
+			</figure>
+			<p>
+				To estimate such distributions without making any strong parametric assumptions, one can use a class of models called kernel density estimators (KDEs). In contrast to a parametric model, where we encode all information on the distribution in their parameters, KDEs are non-parametric and use all data points to form an estimate for a given input value. Since they can learn the  shape of  the  density  from the  data  automatically, they are very flexible and can even learn complicated distributions. To see how this works, let us imagine we some data drawn from above distribution. The density function for above distribution was
+			</p>
+			<pre><code language="javascript">
+&gt; var truePDF = function( x ) {
+    return 0.5 * base.dist.normal.pdf( x, 2, 1 ) + 0.5 * base.dist.normal.pdf( x, 9, 2 );
+}</code></pre>
+			<p> and we can draw a sample from it as follows: </p>
+			<pre><code language="javascript">
+&gt; var xs = new Array( 100);
+&gt; inmap( xs, function( x ) { return base.random.randu() > 0.5 ? base.random.normal( 2, 1) : base.random.normal( 9, 2); } );</code></pre>
+			<p>
+				The kernel density estimator for an unknown <a href="https://en.wikipedia.org/wiki/Probability_density_function">density</a> is defined as
+			</p>
+			<span class="tex" data-eqn="\displaystyle {\hat {f}}_{h}(x)={\frac {1}{nh}}\sum _{i=1}^{n}K{\Big (}{\frac {x-x_{i}}{h}}{\Big )}," displayMode></span>
+			<p>
+				where <i>n</i> is the number observations, <i>K</i> is a so-called <a href="https://en.wikipedia.org/wiki/Kernel_(statistics)">kernel function</a>, and <i>h</i> the bandwidth.
+			</p>
+			<p>
+				We can implement the kernel density estimator as follows:
+			</p>
+			<pre><code language="javascript">
+&gt; function fhat( x, xs, K, h ) {
+    var out = 0;
+    var n = xs.length;
+    for ( var i = 0; i &lt; n; i++ ) {
+        out += K( ( x - xs[i] ) / h );
+    }
+    return out / ( n*h );
+}</code></pre>
+			<p>
+				To gain some intuition into how KDEs work, the next figure shows a kernel density constructed from the six data points located at the black rugs. The KDE works by smoothing each of these observations into a bump (displayed as the dashed red lines), whose shape is determined by the chosen kernel function.
+			</p>
+			<figure id="kde-construction" align="center">
+				<img alt="Construction of KDE" src="img/kde.png" style="max-width: 400px;">
+				<figcaption>Extracted from image by Drleft (CC BY-SA 3.0)</figcaption>
+			</figure>
+			<p>
+				These bumps are then summed together to obtain the KDE, displayed in above plot as the solid blue line. In regions with many data points, the KDE will thus return large values since many bumps were summed together, whereas the KDE will return smaller values for regions with only few observations.
+			</p>
+			<p>
+				Choosing an appropriate bandwidth is a delicate problem. Many solutions have been proposed, but there is no clear best one. For the sake of simplicity, we will employ a rule of thumb by Silverman that is often used in practice. For above data se, the rule chooses the value <span class="tex" data-eqn="h = 1.55054"></span>. Let us store this in a variable of said name:
+			</p>
+			<pre><code language="javascript">
+&gt; var h = 1.55054;</code></pre>
+			</p>
+			<aside class="special">
+				<h3>Silverman's Rule</h3>
+				<p>
+					A commonly used rule of thumb for choosing the bandwidth is Silverman's reference bandwidth, which is defined as follows:
+				</p>
+				<span class="tex" data-eqn="h \approx 0.9 A n^{-1/5}" displayMode></span>
+				<p>
+					where <span class="tex" data-eqn="A = \min( \hat \sigma, IQR )"></span> is the minimum of the <a href="https://en.wikipedia.org/wiki/Standard_deviation">sample standard deviation</a> and the <a href="https://en.wikipedia.org/wiki/Interquartile_range">interquartile range</a>. A previous rule of thumb by Silverman uses the value 1.06 in place of 0.9, but this choice of bandwidth is prone to miss bimodality.
+				</p>
+			</aside>
+			<p>
+				For the kernel function, we will use the Gaussian kernel:
+			</p>
+			<pre><code language="javascript">
+&gt; var K = base.dist.normal.pdf.factory( 0.0, 1.0 );</code></pre>
+			<p>
+				We have now everything in place to run generate a kernel density estimate for our data set and compare it with the true underlying distribution.	To overlay both the true distribution and our estimate on ome plot, let us first create a linearly spaced array of values between 0 and 14 using <code>linspace</code> at whose values we will evaluate the true density as well as our estimator.
+			</p>
+			<pre><code language="javascript">
+&gt; var x = linspace( 0, 14, 200 );
+&gt; var y1 = x.map( function( x ) { return truePDF( x ) } );
+&gt; var y2 = x.map( function( x ) { return fhat( x, xs, K, h ) } );
+&gt; var plt = plot( [x,x], [y1,y2] );
+&gt; plt.colors = [ 'red', 'blue' ];</code></pre>
+			<p>Let us render it into <code>#kde-plot</code>:
+			<pre><code language="javascript">
+&gt; var el2 = document.querySelector( '#kde-plot' );
+&gt; el2.innerHTML = vdom2html( plt.render() );</code></pre>
+			<figure id="kde-plot" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:600px;">
+				<figcaption>Figure #kde-plot.</figcaption>
+			</figure>
+			<h3>Exercises</h3>
+			<ul>
+				<li>For the KDE, instead of choosing the bandwidth via Silverman's rule of thumb, pick both a very large and a very small bandwidth and visualize the results. Observe how the results change. One case should correspond to what is called <i>undersmoothing</i>, the other one <i>oversmoothing</i>. Can you see why?</li>
+				<li>In this lab, we have been using the Gaussian kernel, but there are many other available <a href="https://en.wikipedia.org/wiki/Kernel_(statistics)">kernel functions</a>. You can use any kernel function with KDE, but different chocies will lead to estimates with different characteristics. The linked Wikipedia article contains a table with a long list of them. Pick one, implement it, and rerun your analysis.</li>
+			</ul>
+			<h3>Clustering using KDEs</h3>
+			<p>
+				Cluster analysis subsumes unsupervised learning methods that are concerned with the task of grouping observations together in a way that observations assigned to a common group are similar to each other but distinct from observations assigned to the other groups (called <i>clusters</i>). One of the most popular clustering algorithms is <a href="https://en.wikipedia.org/wiki/K-means_clustering">k-means clustering</a>, which is in large part due to its computational efficiency. However, one downside of <a href="https://en.wikipedia.org/wiki/K-means_clustering">k-means clustering</a> is that one has to specify the amount of clusters that one wishes to retrieve beforehand. We are now going to explore a less known clustring technique, which does not suffer from this shortcoming.
+			</p>
+			<p>
+					As we can see, the distribution has two modes, one at the value two and the other at the value nine. We would expect observations generated from this distribution to roughly form two clusters. A clustering algorithm that can uncover these two clusters, without us having to tell the method that there are two groups, is <i>mode clustering</i>.
+			</p>
+			<p>
+				Based on the nonparametric kernel density estimate of the distribution, <i>mode clustering</i> proceeds by finding the modes of the distribution via the so called mean-shift algorithm. Besides estimating the modes of the distribution, the algorithm performs clustering since it reveals what mode each point is attracted to. To perform mode clustering, we have to choose only one <i>tuning parameter</i>, the bandwidth of the underlying kernel density estimator. The mean-shift algorithm works as follows:
+			</p>
+				<aside class="special">
+				<h3>Mean-Shift Algorithm</h3>
+				<ol>
+					<li>
+						Input: A KDE and data points
+						<span class="tex" data-eqn="x_1,\ldots,x_n"></span>
+					</li>
+					<li>
+						For each point <span class="tex" data-eqn="x_j"></span>, set <span class="tex" data-eqn="a_j^{(0)} = x_j"></span>
+						and iterate the following until convergence is achieved:
+						<span class="tex" data-eqn="a_j^{(s+1)} = \frac{\sum_{i=1}^n x_i K\left( \tfrac{a_j^{(s)}-x_i}{h} \right)}{ \sum_{i=1}^n K\left( \tfrac{a_j^{(s)}-x_i}{h} \right)}" displayMode></span>
+					</li>
+				</ol>
+			</aside>
+
+		<h3>Exercises</h3>
+		<ul>
+			<li>Implement the mean-shift algorithm and obtain the cluster assignments for the data:
+				<pre><code language="javascript">
+&gt; function meanShift( xs, K, h ) {
+    var a = copy( xs );
+    for ( var j = 0; j &lt; a.length; j++ ) {
+        // Code comes here...
+    }
+    return a;
+}</code></pre>Hint: Instead of checking for convergence at each iteration, in a first pass it might be easier to just run the algorithm for a sufficiently large number of iterations (say a few hundred).</li>
+		</ul>
+
+			<h3>Survey</h3>
+			<google-codelab-survey survey-id="kdes-and-clustering">
 				<h4>Did you find this lab useful?</h4>
 				<paper-radio-group>
 					<paper-radio-button>Not useful</paper-radio-button>
