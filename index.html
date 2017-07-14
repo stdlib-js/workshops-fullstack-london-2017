@@ -1247,7 +1247,7 @@ base.random.gamma()</code></pre>
 			</p>
 			<pre><code language="javascript">
 &gt; function classifyEmail( text ) {
-    var body = getBody( text );
+    var body = extractBody( text );
     var tokens = tokenize( body );
     var spamScore = base.ln( groupProbs[ "spam" ] );
     for ( let i = 0; i &lt; tokens.length; i++ ) {
