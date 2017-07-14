@@ -38,7 +38,7 @@ $ cd /path/to/parent/destination/directory
 Next, clone the repository.
 
 ``` bash
-$ git clone https://github.com/kgryte/workshops-fullstack-london-2017.git
+$ git clone https://github.com/stdlib-js/workshops-fullstack-london-2017.git
 ```
 
 If you are wanting to contribute to the workshop, first [fork][github-fork] the repository and amend the previous command.
@@ -143,8 +143,8 @@ Copyright &copy; 2017. The Stdlib [Authors][authors].
 [editorconfig]: http://editorconfig.org/
 [editorconfig-chrome]: https://chrome.google.com/webstore/detail/github-editorconfig/bppnolhdpdfmmpeefopdbpmabdpoefjh?hl=en-US
 
-[authors]: https://github.com/kgryte/workshops-fullstack-london-2017/graphs/contributors
-[license]: https://raw.githubusercontent.com/kgryte/workshops-fullstack-london-2017/master/LICENSE
+[authors]: https://github.com/stdlib-js/workshops-fullstack-london-2017/graphs/contributors
+[license]: https://raw.githubusercontent.com/stdlib-js/workshops-fullstack-london-2017/master/LICENSE
 
 </section>
 
