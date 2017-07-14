@@ -1010,7 +1010,7 @@ base.dist.exponential.pdf()</code></pre>
     return out.pValue;
 }</code></pre>
 			<p>
-				Now create a sufficiently large array (at least a few hunded observations) and populate it with p-values generated from this function, say for <code>size = 100</code>. Calculate the proportion of array elements that are smaller than <code>0.05</code>. Is this proportion reasonably close to <code>0.05</code>, as we would expect? You can repeat the whole process a few times to see how the results vary.
+				Now create a sufficiently large array (at least a few hunded observations) and populate it with p-values generated from this function, say, for <code>size = 100</code>. Calculate the proportion of array elements that are smaller than <code>0.05</code>. Is this proportion reasonably close to <code>0.05</code>, as we would expect? Repeat the whole process a few times to see how the results vary.
 			</p>
 			<p>
 				To formally test whether the generated p-values are drawn from a uniform distribution between zero and one, we can use the <a href="https://en.wikipedia.org/wiki/Kolmogorov–Smirnov_test">Kolmogorov-Smirnov test</a>, a test which can be used more generally whenever one wants to test a sample against a continuous reference distribution. In <a title="A standard library for Node.js and JavaScript" href="https://github.com/stdlib-js/stdlib">stdlib</a>, the <a href="https://en.wikipedia.org/wiki/Kolmogorov–Smirnov_test">Kolmogorov-Smirnov test</a> is implemented in the <code>kstest</code> function. Make yourself familiar with its API and use it to assess our claim (Hint: the examples demonstrate how to test against a Uniform(0,1) distribution).
