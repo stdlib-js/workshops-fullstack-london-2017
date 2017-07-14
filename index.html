@@ -1000,7 +1000,7 @@ base.dist.exponential.pdf()</code></pre>
 &gt; var arr = new Array( 300 );
 &gt; inmap( arr, function( x ) { base.random.normal( 0.0, 3.0 ); } );</code></pre>
 			<p>
-				We then run the t-test and extract the p-value. To be able to repeat this process many times, let us wrap it all inside a function:
+				We then run the <a title="Student's t-test" href="https://en.wikipedia.org/wiki/Student%27s_t-test">t-test</a> and extract the p-value. To be able to repeat this process many times, let us wrap everything inside a function:
 			</p>
 			<pre><code language="javascript">
 &gt; function simulatePValue( size ) {
