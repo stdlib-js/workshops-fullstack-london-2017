@@ -1174,7 +1174,7 @@ base.random.gamma()</code></pre>
 				</p>
 			</aside>
 			<p>
-				Before building our model, let us explore the frequency differences for the tokens in both the spam and non-spam groups and find which ones help in discriminating between the two classes. For this purspose, we will divide our training data into two parts, and then lump the tokens from all their documents together into a single array, which we can then count to obtain the frequencies of the tokens in each group. We can use the <code>groupBy</code> function to group our training data into the two groups as follows:
+				Before building our model, let us explore the frequency differences for the tokens in both the spam and non-spam groups and find which ones help in discriminating between the two classes. For this purpose, we will divide our training data into two parts, and then lump the tokens from all their documents together into a single array, which we can then count to obtain the frequencies of the tokens in each group. We can use the <code>groupBy</code> function to group our training data into the two groups as follows:
 			</p>
 			<pre><code language="javascript">
 &gt; var grouped = groupBy( training, function( x ) {
