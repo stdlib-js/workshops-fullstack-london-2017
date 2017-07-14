@@ -1028,13 +1028,27 @@ base.dist.exponential.pdf()</code></pre>
 			<ul>
 				<li>
 					<p>
-						Write a new <code>simulate()</code> function for using the <a title="Student's t-test" href="https://en.wikipedia.org/wiki/Student%27s_t-test">t-test</a> when the data is generated from a <code>Gamma(1,2)</code> distribution. Instead of testing against a mean of zero, use the <code>mu</code> option of <code>ttest()</code> to test against the correct mean.
+						Write a new <code>simulate()</code> function for using the <a title="Student's t-test" href="https://en.wikipedia.org/wiki/Student%27s_t-test">t-test</a> when the data is generated from a <code>Gamma(1,2)</code> distribution.
+					</p>
+					<pre><code language="javascript">
+base.random.gamma()</code></pre>
+					<p>
+						Instead of testing against a mean of zero, use the <code>mu</code> option of <code>ttest()</code> to test against the correct mean.
 					</p>
 					<p>
 						Repeat this for different values of <code>size</code> and verify that the <a title="Student's t-test" href="https://en.wikipedia.org/wiki/Student%27s_t-test">t-test</a> breaks down when one has a skewed distribution such as the <code>Gamma(1,2)</code> and only small sample sizes.
 					</p>
 				</li>
-				<li>Instead of using the <i>p-value</i> to conduct one's tests, one can alternatively look at a confidence interval for the parameter of interest. Confidence intervals are often used to convey uncertainty in model estimates, since they are useful even when one does not have a concrete hypothesis one wishes to test. For a </code>1-alpha</code> confidence interval, one has the guarantee that for a large number of such confidence intervals, </code>1-alpha</code> of them will contain the true parameter. Verify this behavior by repeatedly simulating data from a normal distribution with zero mean, extracting the confidence intervals from a <code>ttest</code> and showing that they contain zero around </code>1-alpha</code> of the cases. Notice that while in reality we are not going to repeat a specific test multiple times, we will likely conduct many different tests over a long time period. If we conduct them all at a significance level </code>alpha</code>, we can be certain that </code>1-alpha</code> of the them contain the true value (provided there are no violations of test assumptions).
+				<li>
+					<p>
+						Instead of using the <i>p-value</i> to conduct one's tests, one can alternatively look at a confidence interval for the parameter of interest. Confidence intervals are often used to convey uncertainty in model estimates, since they are useful even when one does not have a concrete hypothesis one wishes to test.
+					</p>
+					<p>
+						For a </code>1-&alpha;</code> confidence interval, one has the guarantee that, for a large number of such confidence intervals, </code>1-&alpha;</code> of them will contain the true parameter. Verify this behavior by repeatedly simulating data from a <a title="Normal distribution" href="https://en.wikipedia.org/wiki/Normal_distribution">normal distribution</a> with zero mean, extracting the confidence intervals from a <a title="Student's t-test" href="https://en.wikipedia.org/wiki/Student%27s_t-test">t-test</a>, and showing that they contain zero around </code>1-&alpha;</code> of the cases.
+					</p>
+					<p>
+						Notice that, while in reality we are not going to repeat a specific test multiple times, we will likely conduct many different tests over a long period of time. If we conduct them all at a significance level </code>&alpha;</code>, we can be certain that </code>1-&alpha;</code> of the them contain the true value (provided all test assumptions are valid).
+					</p>
 				</li>
 			</ul>
 
