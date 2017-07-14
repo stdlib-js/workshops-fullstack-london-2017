@@ -687,8 +687,8 @@
 			</p>
 			<pre><code language="javascript">
 &gt; var N = 100; // number of observations
-&gt; var y = new Float64Array( N );
-&gt; inmap( y, function () { return base.random.normal( 0.0, 1.0 ); } );</code></pre>
+&gt; var data = new Float64Array( N );
+&gt; inmap( data, function () { return base.random.normal( 0.0, 1.0 ); } );</code></pre>
 			<p>
 				To see the shape of our data, we can construct a <a title="Histogram" href="https://en.wikipedia.org/wiki/Histogram">histogram</a>, in which we "bin" each observation and count the number of observations for each bin.
 			</p>
@@ -701,40 +701,69 @@
 				In order to place our data in bins having a width of <code>0.1</code>, we can first use the function <code>base.roundn()</code> to round each observation to a specified number of decimal places. For bin widths of <code>0.1</code>, we want to round to the first decimal.
 			</p>
 			<pre><code language="javascript">
-&gt; inmap( y, function ( y ) { return base.roundn( y, -1 ); } );</code></pre>
+&gt; inmap( data, function ( d ) { return base.roundn( d, -1 ); } );</code></pre>
 			<p>
-				Next, we can compute the number of observations for each bin by using the <code>countBy</code> function with the <code>identity()</code> function as the <i>indicator</i>.
+				Currently, the data array is unordered, and, if ordered, would probably contains "gaps", in which a bin (i.e., rounded value) does not have any observations and thus is not present in the array. To transform our data array into a dense representation, we can proceed as follows. First, we define the expected bin domain.
 			</p>
 			<pre><code language="javascript">
-&gt; var counts = countBy( y, identity );</code></pre>
+&gt; var bmin = -5.0;
+&gt; var bmax = 5.0;</code></pre>
 			<p>
-				In order to plot the data, we need to construct an <code>x</code> vector covering the expected bin domain.
+				where <code>bmin</code> and <code>bmax</code> represent the leftmost bin location (center) and the rightmost bin location (center), respectively. Now that we have defined our bin domain, we can compute the number of bins as follows:
 			</p>
 			<pre><code language="javascript">
-&gt; var x = [];
-&gt; function predicate() { return x[ x.length-1 ] !== 5.0; };
-&gt; function fcn( i ) {
-    var v = -5.0 + (0.1*i);
-    x.push( base.roundn( v, -1 ) );
-};
-&gt; whilst( predicate, fcn );</code></pre>
+&gt; var bwidth = 0.1;
+&gt; var nbins = ((bmax-bmin) / bwidth) + 1;</code></pre>
 			<p>
-				Next, we need to create a <code>y</code> vector having the same length as <code>x</code>, but which includes the bin counts.
+				You can convince yourself of the bin formula by considering the bin vector: {0, 1, 2, 3}, where <code>0</code> and <code>3</code> are the leftmost and rightmost bin centers, respectively. If we apply the formula above, we recover the vector length, as expected.
+			</p>
+			<p>
+				Now that we have the number of bins, we can initialize a vector which will contain the bin counts for each bin in the expected domain.
 			</p>
 			<pre><code language="javascript">
-&gt; y = new Float64Array( x.length );
-&gt; function key2idx( k ) { return indexOf( x, parseFloat( k ) ); };
-&gt; forOwn( counts, function ( v, k ) { y[ key2idx( k ) ] = v; } );</code></pre>
+&gt; var counts = new Int32Array( nbins );</code></pre>
+			<p>
+				Next, when determining bin counts, we need to define a method which allows us to efficiently determine a value's bin index. By this we mean, if given the observation <code>-0.1</code>, what is the array index in the <code>counts</code> vector for the bin whose count we want to update? Building on the formula above for <code>nbins</code>, we can define the following function:
+			</p>
+			<pre><code language="javascript">
+&gt; function bidx( bmin, bwidth, v ) { return base.round( base.abs(bmin-v) / bwidth ); };</code></pre>
 			<aside class="special">
 				<p>
-					More performant methods exist for computing a <a title="Histogram" href="https://en.wikipedia.org/wiki/Histogram">histogram</a>. Implementing these methods is left as an exercise for the reader.
+					Why does the index formula use <code>base.round()</code>? Try implementing the index formula without rounding and provide <code>v = -2.1</code>.
 				</p>
 			</aside>
+			<p>
+				To convince yourself of the index formula, consider the edge cases <code>-5.0</code> and <code>5.0</code>. If <code>v = -5.0</code>, the computed index is <code>0</code>, which corresponds to the leftmost bin. If <code>v = 5.0</code>, the computed index is <code>100</code>, which corresponds to the rightmost bin. As an exercise, compute the indexes for <code>-4.8</code> and <code>4.8</code> and confirm that the returned index is correct.
+			</p>
+			<aside class="special">
+				<p>
+					The index formula does <strong>not</strong> address data values which are outside the expected domain. How should we handle these values?
+				</p>
+			</aside>
+			<p>
+				Now that we have a means for computing a bin index, we can populate our <code>counts</code> vector by iterating over our <code>data</code> array and updating the corresponding count.
+			</p>
+			<pre><code language="javascript">
+&gt; var idx, i;
+&gt; for ( i = 0; i &lt; data.length; i++ ) {
+    idx = bidx( bmin, bwidth, data[ i ] );
+    counts[ idx ] += 1;
+};</code></pre>
+			<p>
+				In order to plot the data, we need to construct a bin vector covering the expected bin domain; i.e., -5.0, -4.9, ..., 4.9, 5.0.
+			</p>
+			<pre><code language="javascript">
+&gt; var bcenters = new Float64Array( nbins );
+&gt; var bc;
+&gt; for ( i = 0; i &lt; nbins; i++ ) {
+    bc = bmin + (bwidth*i);
+    bcenters[ i ] = base.roundn( bc, -1 );
+};</code></pre>
 			<p>
 				To plot the data, we proceed as we did in the previous lab.
 			</p>
 			<pre><code language="javascript">
-&gt; var plt = plot( [x], [y] );
+&gt; var plt = plot( [bcenters], [counts] );
 &gt; plt.xLabel = 'x';
 &gt; plt.yLabel = 'counts';
 &gt; var el = document.querySelector( '#histogram-normal-1' );
