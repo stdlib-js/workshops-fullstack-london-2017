@@ -750,7 +750,7 @@
     counts[ idx ] += 1;
 };</code></pre>
 			<p>
-				In order to plot the data, we need to construct a bin vector covering the expected bin domain; i.e., -5.0, -4.9, ..., 4.9, 5.0.
+				In order to plot the data, we need to construct a bin vector, which will be plotted along the x-axis, covering the expected bin domain; i.e., -5.0, -4.9, ..., 4.9, 5.0.
 			</p>
 			<pre><code language="javascript">
 &gt; var bcenters = new Float64Array( nbins );
@@ -763,11 +763,11 @@
 				To plot the data, we proceed as we did in the previous lab.
 			</p>
 			<pre><code language="javascript">
-&gt; var plt = plot( [bcenters], [counts] );
-&gt; plt.xLabel = 'x';
-&gt; plt.yLabel = 'counts';
+&gt; var plt1 = plot( [bcenters], [counts] );
+&gt; plt1.xLabel = 'x';
+&gt; plt1.yLabel = 'counts';
 &gt; var el = document.querySelector( '#histogram-normal-1' );
-&gt; el.innerHTML = vdom2html( plt.render() );</code></pre>
+&gt; el.innerHTML = vdom2html( plt1.render() );</code></pre>
 			<figure id="histogram-normal-1" align="center">
 				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
 				<figcaption>Figure #histogram-normal-1: A histogram of numbers drawn from a normal distribution.</figcaption>
@@ -780,23 +780,39 @@
 				<figcaption>Figure E6: Expected plot.</figcaption>
 			</figure>
 			<p>
-				To see how well the empirical distribution matches the expected distribution, let us first generate the expected distribution using <code>base.dist.normal.pdf()</code>.
+				To see how well the empirical distribution matches the expected distribution, let us first generate an (approximated) expected distribution using <code>base.dist.normal.pdf()</code>.
 			</p>
 			<pre><code language="javascript">
-&gt; var expected = new Float64Array( x.length );
-&gt; forEach( x, function ( v, i ) {
-    v = base.dist.normal.pdf( v, 0.0, 1.0 );
-    expected[ i ] = v;
+&gt; var expected = new Float64Array( bcenters.length );
+&gt; forEach( bcenters, function ( x, i ) {
+    var density = base.dist.normal.pdf( x, 0.0, 1.0 );
+    expected[ i ] = N * bwidth * density;
 });</code></pre>
-			<p>
-				Recall that the <a title="Probability distribution" href="https://en.wikipedia.org/wiki/Probability_distribution">probability distribution</a> describes the relative <i>frequency</i> in which each possible outcome will occur in an <strong>experiment</strong>. To convert our empirical distribution from counts to frequencies, we need to normalize our data by dividing by the total number of observations.
-			</p>
-			<pre><code language="javascript">
-&gt; inmap( y, function ( v ) { return v / N; } );
-			</code></pre>
+			<aside class="special">
+				<p>
+					The conversion from a probability density to a probability is more involved than the <a title="Approximating a probability from a probability density" href="http://mathinsight.org/probability_density_function_idea">approximation</a> used here.
+				</p>
+			</aside>
 			<p>
 				We can now update the plot to show both the empirical and expected distributions.
 			</p>
+			<pre><code language="javascript">
+&gt; var plt2 = plot( [bcenters,bcenters], [counts,expected] );
+&gt; plt2.xLabel = 'x';
+&gt; plt2.yLabel = 'counts';
+&gt; var el = document.querySelector( '#histogram-normal-overlay-1' );
+&gt; el.innerHTML = vdom2html( plt2.render() );</code></pre>
+			<figure id="histogram-normal-overlay-1" align="center">
+				<img alt="placeholder" src="img/plot_placeholder.png" style="max-width:400px;">
+				<figcaption>Figure #histogram-normal-overlay-1: Empirical and expected distributions.</figcaption>
+			</figure>
+			<p>
+				The plot view should look similar to the following:
+			</p>
+			<figure align="center">
+				<img alt="Empirical and expected distributions" src="img/histogram_normal_overlay_1.png" style="max-width: 600px;">
+				<figcaption>Figure E7: Expected plot.</figcaption>
+			</figure>
 
 			<h3>Exercises</h3>
 			<ul>
